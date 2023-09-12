@@ -1,6 +1,0 @@
-/Addons/imgui
-/Addons/stb
-/Addons/khrplatform.h
-CMakeLists.txt
-/cmake-build-debug
-.gitignore
