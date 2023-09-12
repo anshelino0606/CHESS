@@ -1,3 +1,6 @@
-/Addons/
+/Addons/imgui
+/Addons/stb
+/Addons/khrplatform.h
 CMakeLists.txt
-/cmake-build-debug/
+/cmake-build-debug
+.gitignore
