@@ -1,0 +1,3 @@
+/Users/anhelinamodenko/CLionProjects/CHESS/cmake-build-debug/CMakeFiles/CHESS.dir
+/Users/anhelinamodenko/CLionProjects/CHESS/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/anhelinamodenko/CLionProjects/CHESS/cmake-build-debug/CMakeFiles/rebuild_cache.dir
