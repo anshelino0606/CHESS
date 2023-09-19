@@ -8,8 +8,8 @@
 
 #include "Addons/glad/glad.h"
 #include <GLFW/glfw3.h>
-#include "../texture.h"
-#include "../shader.h"
+#include "ENGINE/GRAPHICS/Texture/texture.h"
+#include "ENGINE/GRAPHICS/Shader/shader.h"
 
 class Game;
 class Shop;

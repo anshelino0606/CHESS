@@ -7,7 +7,8 @@
 
 #include <string>
 #include "Piece.h"
-#include "./GRAPHICS/texture.h"
+#include "ENGINE/GRAPHICS/Texture/texture.h"
+#include "ENGINE/GRAPHICS/GameLevel/GameLevel.h"
 
 constexpr int NB_SQ = 64;       // Number of squares on the chessboard
 constexpr int NB_CASTLE = 2;    // Number of castle types
@@ -27,7 +28,11 @@ enum class Color
 
 class Board {
 public:
-    Board();
+    Board(unsigned int width, unsigned int height);
+
+    GameLevel level;
+
+    bool keys[1024];
 
     void parseFen(const std::string& FEN);
     void processInput(float dt);

@@ -10,8 +10,8 @@
 
 #include "Addons/glad/glad.h"
 
-#include "texture.h"
-#include "shader.h"
+#include "ENGINE/GRAPHICS/Texture/texture.h"
+#include "ENGINE/GRAPHICS/Shader/shader.h"
 
 // static singleton class
 

@@ -3,8 +3,8 @@
 //
 
 #include "Board.h"
-#include "./GRAPHICS/resourceManager.h"
-#include "./GRAPHICS/Renderer/SpriteRenderer.h"
+#include "ENGINE/GRAPHICS/ResourceManager/resourceManager.h"
+#include "ENGINE/GRAPHICS/Renderer/SpriteRenderer.h"
 
 SpriteRenderer* Renderer;
 
@@ -29,9 +29,12 @@ void Board::init() {
 
 
 
-Board::Board() {
-    this->height = 800;
-    this->width = 800;
+Board::Board(unsigned int width, unsigned int height) {
+    this->height = height;
+    this->width = width;
+
+    this->widthOfSquare = width / 8;
+    this->heightOfSquare = height / 8;
 
     board = new char[NB_SQ];
     castleRights = new bool*[NB_COLOR];
@@ -119,4 +122,16 @@ void Board::parseFen(const std::string& FEN) {
     else {
         enPassant = "";
     }
+}
+
+void Board::render() {
+
+    Renderer->DrawSprite(ResourceManager::getTexture("board"),
+                         glm::vec2(0.0f, 0.0f),
+                         glm::vec2(this->width, this->height),
+                         0.0f);
+
+    this->level.draw(*Renderer);
+
+
 }
