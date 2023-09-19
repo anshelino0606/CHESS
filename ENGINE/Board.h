@@ -30,9 +30,11 @@ public:
     Board();
 
     void parseFen(const std::string& FEN);
+    void processInput(float dt);
     void init();
     void update();
     void render();
+    void doCollisions();
 
 
     ~Board();
@@ -47,10 +49,10 @@ private:
 
     char* board;
     bool** castleRights;
+    Piece pieces[32];
 
-    int width = 800;
-    int height = 800;
-
+    unsigned int width, height;
+    unsigned int widthOfSquare, heightOfSquare;
 
 };
 

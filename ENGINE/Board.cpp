@@ -4,6 +4,7 @@
 
 #include "Board.h"
 #include "./GRAPHICS/resourceManager.h"
+#include "./GRAPHICS/Renderer/SpriteRenderer.h"
 
 SpriteRenderer* Renderer;
 
@@ -23,11 +24,15 @@ void Board::init() {
     ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/SmartShoppingCart/Game/Assets/Tiles/cursor.png", true, "cursor");
 
 
+
 }
 
 
 
 Board::Board() {
+    this->height = 800;
+    this->width = 800;
+
     board = new char[NB_SQ];
     castleRights = new bool*[NB_COLOR];
     for (int i = 0; i < NB_COLOR; ++i) {
