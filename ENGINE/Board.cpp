@@ -45,15 +45,12 @@ void Board::parseFen(const std::string& FEN)
 
     // Function to set the squares on the board
     auto set_squares = [&](char piece, int count) {
-        for (int i = 0; i < count; ++i)
-        {
-            if (index < NB_SQ)
-            {
+        for (int i = 0; i < count; ++i) {
+            if (index < NB_SQ) {
                 board[index] = piece;
                 ++index;
             }
-            else
-            {
+            else {
                 // Handle malformed FEN (buffer overflow)
                 // You may want to throw an exception or handle this differently
                 break;
@@ -62,20 +59,16 @@ void Board::parseFen(const std::string& FEN)
     };
 
     // Parse the board
-    while (iter < FEN.size() && FEN[iter] != ' ')
-    {
-        if (FEN[iter] == '/')
-        {
+    while (iter < FEN.size() && FEN[iter] != ' ') {
+        if (FEN[iter] == '/') {
             // Handle malformed FEN (no more than 8 files in a rank)
             // You may want to throw an exception or handle this differently
         }
-        else if (isdigit(FEN[iter]))
-        {
+        else if (isdigit(FEN[iter])) {
             int count = FEN[iter] - '0';
             set_squares('.', count);
         }
-        else
-        {
+        else {
             set_squares(FEN[iter], 1);
         }
         ++iter;
@@ -83,45 +76,36 @@ void Board::parseFen(const std::string& FEN)
 
     // Parse the turn
     ++iter;
-    if (iter < FEN.size() && FEN[iter] == 'w')
-    {
+    if (iter < FEN.size() && FEN[iter] == 'w') {
         turn = Color::white;
     }
-    else if (iter < FEN.size() && FEN[iter] == 'b')
-    {
+    else if (iter < FEN.size() && FEN[iter] == 'b') {
         turn = Color::black;
     }
 
     // Parse the castling rights
     iter += 2;
-    while (iter < FEN.size() && FEN[iter] != ' ')
-    {
-        if (FEN[iter] == 'k')
-        {
+    while (iter < FEN.size() && FEN[iter] != ' ') {
+        if (FEN[iter] == 'k') {
             castleRights[static_cast<int>(Color::black)][static_cast<int>(Castle::kingSide)] = true;
         }
-        else if (FEN[iter] == 'K')
-        {
+        else if (FEN[iter] == 'K') {
             castleRights[static_cast<int>(Color::white)][static_cast<int>(Castle::kingSide)] = true;
         }
-        else if (FEN[iter] == 'q')
-        {
+        else if (FEN[iter] == 'q') {
             castleRights[static_cast<int>(Color::black)][static_cast<int>(Castle::queenSide)] = true;
         }
-        else if (FEN[iter] == 'Q')
-        {
+        else if (FEN[iter] == 'Q') {
             castleRights[static_cast<int>(Color::white)][static_cast<int>(Castle::queenSide)] = true;
         }
         ++iter;
     }
 
     // Parse en passant (if available)
-    if (iter + 1 < FEN.size() && FEN[iter] == ' ')
-    {
+    if (iter + 1 < FEN.size() && FEN[iter] == ' ') {
         enPassant = FEN.substr(iter + 1, 2);
     }
-    else
-    {
+    else {
         enPassant = ""; // No en passant available
     }
 }
