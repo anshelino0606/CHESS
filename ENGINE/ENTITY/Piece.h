@@ -16,7 +16,7 @@ public:
 
     Piece(char symbol, Color color, Position position);
 
-    virtual std::vector<Position> getLegalMoves(const Board& board) const = 0;
+    virtual std::vector<Position> getLegalMoves(const Board& board, Position currentPos) const = 0;
 
     virtual ~Piece();
 

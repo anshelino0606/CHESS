@@ -54,7 +54,7 @@ private:
 
     char* board;
     bool** castleRights;
-    Piece pieces[32];
+    Piece* pieces;
 
     unsigned int width, height;
     unsigned int widthOfSquare, heightOfSquare;
