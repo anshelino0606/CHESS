@@ -5,17 +5,24 @@
 #include "Board.h"
 #include "./GRAPHICS/resourceManager.h"
 
+SpriteRenderer* Renderer;
+
 void Board::init() {
 
-    ResourceManager::loadTexture("", true, "light");
-    ResourceManager::loadTexture("", true, "dark");
+    ResourceManager::loadShader("/Users/anhelinamodenko/Documents/Share/MALL_1/Algorithms/Shaders/sprite.vert", "/Users/anhelinamodenko/Documents/Share/MALL_1/Algorithms/Shaders/sprite.frag", nullptr, "sprite");
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->width),
+                                      static_cast<float>(this->height), 0.0f, -1.0f, 1.0f);
 
-    // TODO: load as a game level
+    ResourceManager::getShader("sprite").activate();
+    ResourceManager::getShader("sprite").setInt("image", 0);
+    ResourceManager::getShader("sprite").setMat4("projection", projection);
+    Shader myShader;
+    myShader = ResourceManager::getShader("sprite");
+    Renderer = new SpriteRenderer(myShader);
 
-    for (int i = 0; i < 32; i++) {
-        // TODO: implement pawn initialization
-        // PARSE FEN NOTATION
-    }
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/SmartShoppingCart/Game/Assets/Tiles/cursor.png", true, "cursor");
+
+
 }
 
 
@@ -38,8 +45,9 @@ Board::~Board() {
     delete[] castleRights;
 }
 
-void Board::parseFen(const std::string& FEN)
-{
+void Board::parseFen(const std::string& FEN) {
+    fenData = FEN;
+
     size_t iter = 0;
     int index = 0;
 
@@ -74,7 +82,7 @@ void Board::parseFen(const std::string& FEN)
         ++iter;
     }
 
-    // Parse the turn
+
     ++iter;
     if (iter < FEN.size() && FEN[iter] == 'w') {
         turn = Color::white;
@@ -83,7 +91,6 @@ void Board::parseFen(const std::string& FEN)
         turn = Color::black;
     }
 
-    // Parse the castling rights
     iter += 2;
     while (iter < FEN.size() && FEN[iter] != ' ') {
         if (FEN[iter] == 'k') {
@@ -101,11 +108,10 @@ void Board::parseFen(const std::string& FEN)
         ++iter;
     }
 
-    // Parse en passant (if available)
     if (iter + 1 < FEN.size() && FEN[iter] == ' ') {
         enPassant = FEN.substr(iter + 1, 2);
     }
     else {
-        enPassant = ""; // No en passant available
+        enPassant = "";
     }
 }

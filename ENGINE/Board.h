@@ -43,9 +43,13 @@ private:
 
     Color turn;
     std::string enPassant;
+    std::string fenData;
 
     char* board;
     bool** castleRights;
+
+    int width = 800;
+    int height = 800;
 
 
 };
