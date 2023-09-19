@@ -133,5 +133,51 @@ void Board::render() {
 
     this->level.draw(*Renderer);
 
+    std::unordered_map<char, std::string> pieceTextureMap = {
+            // Black pieces
+            {'p', "black_pawn_texture"},
+            {'r', "black_rook_texture"},
+            {'n', "black_knight_texture"},
+            {'b', "black_bishop_texture"},
+            {'q', "black_queen_texture"},
+            {'k', "black_king_texture"},
+
+            // White pieces
+            {'P', "white_pawn_texture"},
+            {'R', "white_rook_texture"},
+            {'N', "white_knight_texture"},
+            {'B', "white_bishop_texture"},
+            {'Q', "white_queen_texture"},
+            {'K', "white_king_texture"}
+    };
+
+
+    float squareWidth = this->widthOfSquare;
+    float squareHeight = this->heightOfSquare;
+
+    int rank = 7; // Start from rank 8 (top of the board)
+    int file = 0; // Start from file A (leftmost)
+
+    for (char fenChar : fenData) {
+        if (fenChar == '/') {
+            rank--;
+            file = 0;
+        } else if (isdigit(fenChar)) {
+            file += fenChar - '0';
+        } else if (fenChar == ' ') {
+            continue;
+        } else {
+            auto it = pieceTextureMap.find(fenChar);
+            if (it != pieceTextureMap.end()) {
+                glm::vec2 piecePosition = glm::vec2(file * squareWidth, rank * squareHeight);
+
+                Renderer->DrawSprite(ResourceManager::getTexture(it->second),
+                                     piecePosition,
+                                     glm::vec2(squareWidth, squareHeight),
+                                     0.0f);
+            }
+            file++;
+        }
+    }
 
 }
