@@ -24,7 +24,6 @@ void Board::init() {
     ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/SmartShoppingCart/Game/Assets/Tiles/cursor.png", true, "cursor");
 
 
-
 }
 
 

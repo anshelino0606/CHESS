@@ -5,11 +5,26 @@
 #ifndef CHESS_PIECE_H
 #define CHESS_PIECE_H
 
+#include "Position/Position.hpp"
+#include <vector>
+
+class Board;
+enum class Color;
 
 class Piece {
-private:
-
 public:
+
+    Piece(char symbol, Color color, Position position);
+
+    virtual std::vector<Position> getLegalMoves(const Board& board) const = 0;
+
+    virtual ~Piece();
+
+
+private:
+    char symbol;
+    Color color;
+    Position position;
 
 };
 
