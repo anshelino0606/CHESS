@@ -3,7 +3,7 @@
 //
 
 #include "GameLevel.h"
-#include "Graphics/resourceManager.h"
+#include "../ResourceManager/resourceManager.h"
 
 #include <fstream>
 #include <sstream>
