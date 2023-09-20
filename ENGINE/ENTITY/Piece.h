@@ -11,21 +11,31 @@
 class Board;
 enum class Color;
 
+enum class PieceType {
+    pawn,
+    knight,
+    bishop,
+    rook,
+    queen,
+    king
+};
+
 class Piece {
 public:
 
-    Piece(char symbol, Color color, Position position);
+    Piece(char symbol, Color color, Position position, PieceType type);
 
     virtual std::vector<Position> getLegalMoves(const Board& board, Position currentPos) const = 0;
 
     virtual ~Piece();
 
-
 private:
     char symbol;
-    Color color;
     Position position;
+    PieceType type;
 
+protected:
+    Color color;
 };
 
 
