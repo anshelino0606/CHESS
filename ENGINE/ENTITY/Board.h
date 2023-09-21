@@ -9,6 +9,7 @@
 #include "Piece.h"
 #include "ENGINE/GRAPHICS/Texture/texture.h"
 #include "ENGINE/IO/keyboard.h"
+#include "ENGINE/IO/mouse.h"
 #include "ENGINE/GRAPHICS/GameLevel/GameLevel.h"
 
 constexpr int NB_SQ = 64;       // Number of squares on the chessboard

@@ -209,6 +209,7 @@ void Board::processInput(float dt) {
     if (Keyboard::keyWentDown(GLFW_KEY_F)) {
         this->isReversed = !this->isReversed;
     }
+    doCollisions();
 }
 
 Piece* Board::getPieceAt(Position position) const {
@@ -228,5 +229,18 @@ Board::~Board() {
     delete[] castleRights;
     delete[] pieces;;
     delete Renderer;
+}
+
+void Board::doCollisions() {
+
+    unsigned int x = Mouse::getMouseX();
+    unsigned int y = Mouse::getMouseY();
+
+    unsigned int row = y / this->heightOfSquare;
+    unsigned int col = x / this->widthOfSquare;
+
+    if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        std::cout << "row: " << row << " col: " << col << std::endl;
+    }
 }
 
