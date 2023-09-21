@@ -8,6 +8,33 @@
 
 SpriteRenderer* Renderer;
 
+Board::Board(unsigned int width, unsigned int height) : keys(){
+    this->height = height;
+    this->width = width;
+
+    this->widthOfSquare = width / 8.0f;
+    this->heightOfSquare = height / 8.0f;
+
+
+    try {
+        board = new char[NB_SQ];
+        castleRights = new bool*[NB_COLOR];
+        for (int i = 0; i < NB_COLOR; ++i) {
+            castleRights[i] = new bool[NB_CASTLE];
+        }
+
+    } catch (...) {
+        // Exception occurred, clean up allocated memory
+        delete[] board;
+        delete[] castleRights;
+        delete[] pieces;
+
+        // Re-throw the exception to propagate it
+        throw;
+    }
+
+}
+
 void Board::init() {
 
     std::string initialFEN = "8/2pk4/nr1Pp3/1p1p2pN/4Q2p/1K1B4/7B/7N w - - 0 1";
@@ -40,33 +67,6 @@ void Board::init() {
     level1.load("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/tileData.txt", this->width, this->height);
     this->level = level1;
     parseFen(initialFEN);
-
-}
-
-Board::Board(unsigned int width, unsigned int height) : keys(){
-    this->height = height;
-    this->width = width;
-
-    this->widthOfSquare = width / 8.0f;
-    this->heightOfSquare = height / 8.0f;
-
-
-    try {
-        board = new char[NB_SQ];
-        castleRights = new bool*[NB_COLOR];
-        for (int i = 0; i < NB_COLOR; ++i) {
-            castleRights[i] = new bool[NB_CASTLE];
-        }
-
-    } catch (...) {
-        // Exception occurred, clean up allocated memory
-        delete[] board;
-        delete[] castleRights;
-        delete[] pieces;
-
-        // Re-throw the exception to propagate it
-        throw;
-    }
 
 }
 
@@ -205,13 +205,6 @@ void Board::processInput(float dt) {
     }
 }
 
-Board::~Board() {
-    delete[] board;
-    delete[] castleRights;
-    delete[] pieces;;
-    delete Renderer;
-}
-
 Piece* Board::getPieceAt(Position position) const {
     Piece *piece = nullptr;
     if (isValidPosition(position.getRow(), position.getCol())) {
@@ -222,4 +215,11 @@ Piece* Board::getPieceAt(Position position) const {
 
 bool Board::isValidPosition(int row, int col) const {
     return row >= 0 && row < 8 && col >= 0 && col < 8;
+}
+
+Board::~Board() {
+    delete[] board;
+    delete[] castleRights;
+    delete[] pieces;;
+    delete Renderer;
 }
