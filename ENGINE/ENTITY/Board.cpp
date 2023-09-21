@@ -247,19 +247,38 @@ void Board::doCollisions() {
 
         if (clickedPiece != nullptr) {
             if (selectedPiece == clickedPiece) {
-                // Clicked the same piece again, so unhighlight it
                 selectedPiece = nullptr;
+                removeHighlight(Position(row, col));
             } else {
                 selectedPiece = clickedPiece;
+                renderHighlight(Position(row, col));
             }
         } else {
             // Clear the selected piece if an empty square is clicked
             selectedPiece = nullptr;
+            removeHighlight(Position(row, col));
         }
 
     }
 }
 
+void Board::renderHighlight(Position position) {
+    // Highlight the square on position
+    glm::vec2 highlightPosition = glm::vec2(position.getCol() * widthOfSquare, position.getRow() * heightOfSquare);
+    Renderer->DrawSprite(ResourceManager::getTexture("highlight"),
+                         highlightPosition,
+                         glm::vec2(widthOfSquare, heightOfSquare),
+                         0.0f);
+}
 
+void Board::removeHighlight(Position position) {
+    // Remove the highlight from the square on position
+    glm::vec2 highlightPosition = glm::vec2(position.getCol() * widthOfSquare, position.getRow() * heightOfSquare);
+    Renderer->DrawSprite(ResourceManager::getTexture("board"),
+                         highlightPosition,
+                         glm::vec2(widthOfSquare, heightOfSquare),
+                         0.0f);
+
+}
 
 

@@ -43,6 +43,9 @@ public:
     void render();
     void doCollisions();
 
+    void renderHighlight(Position position);
+    void removeHighlight(Position position);
+
     bool isEmpty(int row, int col) const;
     bool isOpponent(int row, int col, Color currentPlayerColor) const;
     bool isValidPosition(int row, int col) const;
@@ -60,6 +63,7 @@ private:
     char* board;
     bool** castleRights;
     Piece* pieces;
+    Piece *selectedPiece;
 
     unsigned int width, height;
     unsigned int widthOfSquare, heightOfSquare;
