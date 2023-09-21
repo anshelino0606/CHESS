@@ -1,6 +1,6 @@
 #define GLFW_INCLUDE_GLCOREARB
 #define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define WINDOW_HEIGHT 800
 
 #include "Addons/glad/glad.h"
 #include <GLFW/glfw3.h>
@@ -12,13 +12,15 @@
 
 #include <iostream>
 
+Board board(800, 800);
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void process_input(GLFWwindow* window);
 void cursor_position_callback(GLFWwindow* window, double x, double y);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
-//Board board(WINDOW_WIDTH, WINDOW_HEIGHT);
+
 
 int main() {
     glfwInit();
@@ -71,7 +73,7 @@ int main() {
 
     // initialize game
     // ---------------
-//    board.init();
+    board.init();
 
     // deltaTime variables
     // -------------------
@@ -106,7 +108,7 @@ int main() {
 
         // manage user input
         // -----------------
-//        board.processInput(deltaTime);
+        board.processInput(deltaTime);
 
 //        ImGui::Begin("FPS COUNT");
 //        ImGui::Text("FPS: %.0f", fps);
@@ -117,7 +119,7 @@ int main() {
         // ------
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-//        board.render();
+        board.render();
         // Start the Dear ImGui frame
 
 
