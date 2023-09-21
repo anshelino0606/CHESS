@@ -46,6 +46,8 @@ public:
     bool isOpponent(int row, int col, Color currentPlayerColor) const;
     bool isValidPosition(int row, int col) const;
 
+    Piece* getPieceAt(Position position) const;
+
 
     ~Board();
 

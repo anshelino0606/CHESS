@@ -10,6 +10,7 @@ SpriteRenderer* Renderer;
 
 void Board::init() {
 
+    std::string initialFEN = "8/2pk4/nr1Pp3/1p1p2pN/4Q2p/1K1B4/7B/7N w - - 0 1";
     ResourceManager::loadShader("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/Shaders/sprite.vert", "/Users/anhelinamodenko/CLionProjects/CHESS/Addons/Shaders/sprite.frag", nullptr, "sprite");
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->width),
                                       static_cast<float>(this->height), 0.0f, -1.0f, 1.0f);
@@ -22,10 +23,23 @@ void Board::init() {
     Renderer = new SpriteRenderer(myShader);
 
     ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/chess.png", false, "board");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_king.png", true, "white_king");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_queen.png", true, "white_queen");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_rook.png", true, "white_rook");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_bishop.png", true, "white_bishop");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_knight.png", true, "white_knight");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_pawn.png", true, "white_pawn");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/black_king.png", true, "black_king");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/black_queen.png", true, "black_queen");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/black_rook.png", true, "black_rook");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/black_bishop.png", true, "black_bishop");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/black_knight.png", true, "black_knight");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/black_pawn.png", true, "black_pawn");
 
     GameLevel level1;
     level1.load("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/tileData.txt", this->width, this->height);
     this->level = level1;
+    parseFen(initialFEN);
 
 }
 
@@ -33,8 +47,8 @@ Board::Board(unsigned int width, unsigned int height) : keys(){
     this->height = height;
     this->width = width;
 
-    this->widthOfSquare = width / 8;
-    this->heightOfSquare = height / 8;
+    this->widthOfSquare = width / 9.3f;
+    this->heightOfSquare = height / 9.3f;
 
 
     try {
@@ -54,13 +68,6 @@ Board::Board(unsigned int width, unsigned int height) : keys(){
         throw;
     }
 
-}
-
-Board::~Board() {
-    delete[] board;
-    delete[] castleRights;
-    delete[] pieces;;
-    delete Renderer;
 }
 
 void Board::parseFen(const std::string& FEN) {
@@ -112,16 +119,16 @@ void Board::parseFen(const std::string& FEN) {
     iter += 2;
     while (iter < FEN.size() && FEN[iter] != ' ') {
         if (FEN[iter] == 'k') {
-//            castleRights[static_cast<int>(Color::black)][static_cast<int>(Castle::kingSide)] = true;
+            castleRights[static_cast<int>(Color::black)][static_cast<int>(Castle::kingSide)] = true;
         }
         else if (FEN[iter] == 'K') {
-//            castleRights[static_cast<int>(Color::white)][static_cast<int>(Castle::kingSide)] = true;
+            castleRights[static_cast<int>(Color::white)][static_cast<int>(Castle::kingSide)] = true;
         }
         else if (FEN[iter] == 'q') {
-//            castleRights[static_cast<int>(Color::black)][static_cast<int>(Castle::queenSide)] = true;
+            castleRights[static_cast<int>(Color::black)][static_cast<int>(Castle::queenSide)] = true;
         }
         else if (FEN[iter] == 'Q') {
-//            castleRights[static_cast<int>(Color::white)][static_cast<int>(Castle::queenSide)] = true;
+            castleRights[static_cast<int>(Color::white)][static_cast<int>(Castle::queenSide)] = true;
         }
         ++iter;
     }
@@ -145,20 +152,20 @@ void Board::render() {
 
     std::unordered_map<char, std::string> pieceTextureMap = {
             // Black pieces
-            {'p', "black_pawn_texture"},
-            {'r', "black_rook_texture"},
-            {'n', "black_knight_texture"},
-            {'b', "black_bishop_texture"},
-            {'q', "black_queen_texture"},
-            {'k', "black_king_texture"},
+            {'p', "black_pawn"},
+            {'r', "black_rook"},
+            {'n', "black_knight"},
+            {'b', "black_bishop"},
+            {'q', "black_queen"},
+            {'k', "black_king"},
 
             // White pieces
-            {'P', "white_pawn_texture"},
-            {'R', "white_rook_texture"},
-            {'N', "white_knight_texture"},
-            {'B', "white_bishop_texture"},
-            {'Q', "white_queen_texture"},
-            {'K', "white_king_texture"}
+            {'P', "white_pawn"},
+            {'R', "white_rook"},
+            {'N', "white_knight"},
+            {'B', "white_bishop"},
+            {'Q', "white_queen"},
+            {'K', "white_king"}
     };
 
 
@@ -168,27 +175,27 @@ void Board::render() {
     int rank = 7; // Start from rank 8 (top of the board)
     int file = 0; // Start from file A (leftmost)
 
-//    for (char fenChar : fenData) {
-//        if (fenChar == '/') {
-//            rank--;
-//            file = 0;
-//        } else if (isdigit(fenChar)) {
-//            file += fenChar - '0';
-//        } else if (fenChar == ' ') {
-//            continue;
-//        } else {
-//            auto it = pieceTextureMap.find(fenChar);
-//            if (it != pieceTextureMap.end()) {
-//                glm::vec2 piecePosition = glm::vec2(file * squareWidth, rank * squareHeight);
-//
-//                Renderer->DrawSprite(ResourceManager::getTexture(it->second),
-//                                     piecePosition,
-//                                     glm::vec2(squareWidth, squareHeight),
-//                                     0.0f);
-//            }
-//            file++;
-//        }
-//    }
+    for (char fenChar : fenData) {
+        if (fenChar == '/') {
+            rank--;
+            file = 0;
+        } else if (isdigit(fenChar)) {
+            file += fenChar - '0';
+        } else if (fenChar == ' ') {
+            continue;
+        } else {
+            auto it = pieceTextureMap.find(fenChar);
+            if (it != pieceTextureMap.end()) {
+                glm::vec2 piecePosition = glm::vec2(file * squareWidth+70, rank * squareHeight+70);
+
+                Renderer->DrawSprite(ResourceManager::getTexture(it->second),
+                                     piecePosition,
+                                     glm::vec2(squareWidth, squareHeight),
+                                     0.0f);
+            }
+            file++;
+        }
+    }
 
 }
 
@@ -196,4 +203,23 @@ void Board::processInput(float dt) {
     if (Keyboard::keyWentDown(GLFW_KEY_F)) {
         std::cout << "F pressed" << std::endl;
     }
+}
+
+Board::~Board() {
+    delete[] board;
+    delete[] castleRights;
+    delete[] pieces;;
+    delete Renderer;
+}
+
+Piece* Board::getPieceAt(Position position) const {
+    Piece *piece = nullptr;
+    if (isValidPosition(position.getRow(), position.getCol())) {
+        piece = &pieces[position.getRow() * 8 + position.getCol()];
+    }
+    return piece;
+}
+
+bool Board::isValidPosition(int row, int col) const {
+    return row >= 0 && row < 8 && col >= 0 && col < 8;
 }
