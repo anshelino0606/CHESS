@@ -21,7 +21,7 @@ void Board::init() {
     myShader = ResourceManager::getShader("sprite");
     Renderer = new SpriteRenderer(myShader);
 
-    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/board.png", true, "board");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/chess.png", false, "board");
 
     GameLevel level1;
     level1.load("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/tileData.txt", this->width, this->height);
@@ -193,7 +193,7 @@ void Board::render() {
 }
 
 void Board::processInput(float dt) {
-    if (Keyboard::keyWentDown(GLFW_KEY_ESCAPE)) {
-        std::cout << "Escape pressed" << std::endl;
+    if (Keyboard::keyWentDown(GLFW_KEY_F)) {
+        std::cout << "F pressed" << std::endl;
     }
 }

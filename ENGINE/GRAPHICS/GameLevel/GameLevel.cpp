@@ -64,6 +64,9 @@ void GameLevel::init(std::vector<std::vector<unsigned int>> tileData, unsigned i
 
             TileType tileType = static_cast<TileType>(tileCode);
 
+            if (tileType == TileType::Empty)
+                continue;
+
             Texture2D tex = ResourceManager::getTexture("board");
 
             glm::vec4 color = glm::vec4(1.0f);

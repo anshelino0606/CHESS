@@ -1,6 +1,6 @@
 #define GLFW_INCLUDE_GLCOREARB
-#define WINDOW_WIDTH 1164
-#define WINDOW_HEIGHT 1164
+#define WINDOW_WIDTH 1000
+#define WINDOW_HEIGHT 1000
 
 #include "Addons/glad/glad.h"
 #include <GLFW/glfw3.h>
@@ -19,8 +19,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void process_input(GLFWwindow* window);
 void cursor_position_callback(GLFWwindow* window, double x, double y);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
-
-
 
 int main() {
     glfwInit();
@@ -117,7 +115,7 @@ int main() {
 
         // render
         // ------
-        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+        glClearColor(0.7f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         board.render();
         // Start the Dear ImGui frame
