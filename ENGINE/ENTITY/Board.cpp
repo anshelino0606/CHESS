@@ -22,7 +22,7 @@ void Board::init() {
     myShader = ResourceManager::getShader("sprite");
     Renderer = new SpriteRenderer(myShader);
 
-    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/chess.png", false, "board");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/board.jpeg", false, "board");
     ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_king.png", true, "white_king");
     ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_queen.png", true, "white_queen");
     ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_rook.png", true, "white_rook");
@@ -47,8 +47,8 @@ Board::Board(unsigned int width, unsigned int height) : keys(){
     this->height = height;
     this->width = width;
 
-    this->widthOfSquare = width / 9.3f;
-    this->heightOfSquare = height / 9.3f;
+    this->widthOfSquare = width / 8.0f;
+    this->heightOfSquare = height / 8.0f;
 
 
     try {
@@ -186,7 +186,7 @@ void Board::render() {
         } else {
             auto it = pieceTextureMap.find(fenChar);
             if (it != pieceTextureMap.end()) {
-                glm::vec2 piecePosition = glm::vec2(file * squareWidth+70, rank * squareHeight+70);
+                glm::vec2 piecePosition = glm::vec2(file * squareWidth, rank * squareHeight);
 
                 Renderer->DrawSprite(ResourceManager::getTexture(it->second),
                                      piecePosition,
