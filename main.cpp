@@ -1,6 +1,6 @@
 #define GLFW_INCLUDE_GLCOREARB
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 800
+#define WINDOW_WIDTH 1164
+#define WINDOW_HEIGHT 1164
 
 #include "Addons/glad/glad.h"
 #include <GLFW/glfw3.h>
@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-Board board(800, 800);
+Board board(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
