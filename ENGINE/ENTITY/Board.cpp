@@ -21,35 +21,46 @@ void Board::init() {
     myShader = ResourceManager::getShader("sprite");
     Renderer = new SpriteRenderer(myShader);
 
-    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/SmartShoppingCart/Game/Assets/Tiles/cursor.png", true, "cursor");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/board.jpg", false, "board");
 
+    GameLevel level;
+    level.load("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/board.jpg", this->width, this->height);
+    this->level = level;
 
 }
 
-
-
-Board::Board(unsigned int width, unsigned int height) {
+Board::Board(unsigned int width, unsigned int height) : keys(){
     this->height = height;
     this->width = width;
 
     this->widthOfSquare = width / 8;
     this->heightOfSquare = height / 8;
 
-    board = new char[NB_SQ];
-    castleRights = new bool*[NB_COLOR];
-    for (int i = 0; i < NB_COLOR; ++i) {
-        castleRights[i] = new bool[NB_CASTLE];
-    }
 
+    try {
+        board = new char[NB_SQ];
+        castleRights = new bool*[NB_COLOR];
+        for (int i = 0; i < NB_COLOR; ++i) {
+            castleRights[i] = new bool[NB_CASTLE];
+        }
+
+    } catch (...) {
+        // Exception occurred, clean up allocated memory
+        delete[] board;
+        delete[] castleRights;
+        delete[] pieces;
+
+        // Re-throw the exception to propagate it
+        throw;
+    }
 
 }
 
 Board::~Board() {
     delete[] board;
-    for (int i = 0; i < NB_COLOR; i++) {
-        delete[] castleRights[i];
-    }
     delete[] castleRights;
+    delete[] pieces;;
+    delete Renderer;
 }
 
 void Board::parseFen(const std::string& FEN) {
@@ -62,7 +73,7 @@ void Board::parseFen(const std::string& FEN) {
     auto set_squares = [&](char piece, int count) {
         for (int i = 0; i < count; ++i) {
             if (index < NB_SQ) {
-                board[index] = piece;
+//                board[index] = piece;
                 ++index;
             }
             else {
@@ -101,16 +112,16 @@ void Board::parseFen(const std::string& FEN) {
     iter += 2;
     while (iter < FEN.size() && FEN[iter] != ' ') {
         if (FEN[iter] == 'k') {
-            castleRights[static_cast<int>(Color::black)][static_cast<int>(Castle::kingSide)] = true;
+//            castleRights[static_cast<int>(Color::black)][static_cast<int>(Castle::kingSide)] = true;
         }
         else if (FEN[iter] == 'K') {
-            castleRights[static_cast<int>(Color::white)][static_cast<int>(Castle::kingSide)] = true;
+//            castleRights[static_cast<int>(Color::white)][static_cast<int>(Castle::kingSide)] = true;
         }
         else if (FEN[iter] == 'q') {
-            castleRights[static_cast<int>(Color::black)][static_cast<int>(Castle::queenSide)] = true;
+//            castleRights[static_cast<int>(Color::black)][static_cast<int>(Castle::queenSide)] = true;
         }
         else if (FEN[iter] == 'Q') {
-            castleRights[static_cast<int>(Color::white)][static_cast<int>(Castle::queenSide)] = true;
+//            castleRights[static_cast<int>(Color::white)][static_cast<int>(Castle::queenSide)] = true;
         }
         ++iter;
     }
@@ -157,26 +168,32 @@ void Board::render() {
     int rank = 7; // Start from rank 8 (top of the board)
     int file = 0; // Start from file A (leftmost)
 
-    for (char fenChar : fenData) {
-        if (fenChar == '/') {
-            rank--;
-            file = 0;
-        } else if (isdigit(fenChar)) {
-            file += fenChar - '0';
-        } else if (fenChar == ' ') {
-            continue;
-        } else {
-            auto it = pieceTextureMap.find(fenChar);
-            if (it != pieceTextureMap.end()) {
-                glm::vec2 piecePosition = glm::vec2(file * squareWidth, rank * squareHeight);
+//    for (char fenChar : fenData) {
+//        if (fenChar == '/') {
+//            rank--;
+//            file = 0;
+//        } else if (isdigit(fenChar)) {
+//            file += fenChar - '0';
+//        } else if (fenChar == ' ') {
+//            continue;
+//        } else {
+//            auto it = pieceTextureMap.find(fenChar);
+//            if (it != pieceTextureMap.end()) {
+//                glm::vec2 piecePosition = glm::vec2(file * squareWidth, rank * squareHeight);
+//
+//                Renderer->DrawSprite(ResourceManager::getTexture(it->second),
+//                                     piecePosition,
+//                                     glm::vec2(squareWidth, squareHeight),
+//                                     0.0f);
+//            }
+//            file++;
+//        }
+//    }
 
-                Renderer->DrawSprite(ResourceManager::getTexture(it->second),
-                                     piecePosition,
-                                     glm::vec2(squareWidth, squareHeight),
-                                     0.0f);
-            }
-            file++;
-        }
+}
+
+void Board::processInput(float dt) {
+    if (Keyboard::keyWentDown(GLFW_KEY_ESCAPE)) {
+        std::cout << "Escape pressed" << std::endl;
     }
-
 }

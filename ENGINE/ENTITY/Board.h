@@ -8,6 +8,7 @@
 #include <string>
 #include "Piece.h"
 #include "ENGINE/GRAPHICS/Texture/texture.h"
+#include "ENGINE/IO/keyboard.h"
 #include "ENGINE/GRAPHICS/GameLevel/GameLevel.h"
 
 constexpr int NB_SQ = 64;       // Number of squares on the chessboard
@@ -41,13 +42,14 @@ public:
     void render();
     void doCollisions();
 
+    bool isEmpty(int row, int col) const;
+    bool isOpponent(int row, int col, Color currentPlayerColor) const;
+    bool isValidPosition(int row, int col) const;
+
 
     ~Board();
 
 private:
-    Texture2D lightSquare;
-    Texture2D darkSquare;
-
     Color turn;
     std::string enPassant;
     std::string fenData;
