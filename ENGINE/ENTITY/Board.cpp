@@ -50,6 +50,7 @@ void Board::init() {
     Renderer = new SpriteRenderer(myShader);
 
     ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/board.jpeg", false, "board");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/highlight.png", true, "highlight");
     ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_king.png", true, "white_king");
     ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_queen.png", true, "white_queen");
     ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/white_rook.png", true, "white_rook");
@@ -240,7 +241,25 @@ void Board::doCollisions() {
     unsigned int col = x / this->widthOfSquare;
 
     if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_LEFT)) {
-        std::cout << "row: " << row << " col: " << col << std::endl;
+        std::cout << "row: " << row+1 << " col: " << col+1 << std::endl;
+
+        Piece* clickedPiece = getPieceAt(Position(row, col));
+
+        if (clickedPiece != nullptr) {
+            if (selectedPiece == clickedPiece) {
+                // Clicked the same piece again, so unhighlight it
+                selectedPiece = nullptr;
+            } else {
+                selectedPiece = clickedPiece;
+            }
+        } else {
+            // Clear the selected piece if an empty square is clicked
+            selectedPiece = nullptr;
+        }
+
     }
 }
+
+
+
 
