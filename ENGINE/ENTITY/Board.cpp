@@ -10,7 +10,7 @@ SpriteRenderer* Renderer;
 
 void Board::init() {
 
-    ResourceManager::loadShader("/Users/anhelinamodenko/Documents/Share/MALL_1/Algorithms/Shaders/sprite.vert", "/Users/anhelinamodenko/Documents/Share/MALL_1/Algorithms/Shaders/sprite.frag", nullptr, "sprite");
+    ResourceManager::loadShader("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/Shaders/sprite.vert", "/Users/anhelinamodenko/CLionProjects/CHESS/Addons/Shaders/sprite.frag", nullptr, "sprite");
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->width),
                                       static_cast<float>(this->height), 0.0f, -1.0f, 1.0f);
 
