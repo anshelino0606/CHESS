@@ -64,19 +64,12 @@ void GameLevel::init(std::vector<std::vector<unsigned int>> tileData, unsigned i
 
             TileType tileType = static_cast<TileType>(tileCode);
 
-            bool isShop = (tileType == TileType::BarrierHalf);
-            bool isBarrier = (tileType == TileType::BarrierFull);
-            bool isHalfBarrier = (tileType == TileType::BarrierHalf);
-
-            Texture2D tex = ResourceManager::getTexture("blank");
+            Texture2D tex = ResourceManager::getTexture("board");
 
             glm::vec4 color = glm::vec4(1.0f);
             color.a = 0.0f;
             // handle other
-            if (isShop) {
-                GameObject obj(pos, size, tex, color, glm::vec2(0.0f), false, true, isHalfBarrier);
-            }
-            GameObject obj(pos, size, tex, color, glm::vec2(0.0f), isBarrier, false, isHalfBarrier);
+            GameObject obj(pos, size, tex, color, glm::vec2(0.0f));
 
             this->tiles.push_back(obj);
 
