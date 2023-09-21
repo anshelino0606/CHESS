@@ -37,7 +37,7 @@ Board::Board(unsigned int width, unsigned int height) : keys(){
 
 void Board::init() {
 
-    std::string initialFEN = "8/2pk4/nr1Pp3/1p1p2pN/4Q2p/1K1B4/7B/7N w - - 0 1";
+    std::string initialFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     ResourceManager::loadShader("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/Shaders/sprite.vert", "/Users/anhelinamodenko/CLionProjects/CHESS/Addons/Shaders/sprite.frag", nullptr, "sprite");
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->width),
                                       static_cast<float>(this->height), 0.0f, -1.0f, 1.0f);
@@ -66,9 +66,13 @@ void Board::init() {
     GameLevel level1;
     level1.load("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/tileData.txt", this->width, this->height);
     this->level = level1;
+    this->isReversed = false;
     parseFen(initialFEN);
 
+
 }
+
+
 
 void Board::parseFen(const std::string& FEN) {
     fenData = FEN;
@@ -148,6 +152,8 @@ void Board::render() {
                          glm::vec2(this->width, this->height),
                          0.0f);
 
+
+
     this->level.draw(*Renderer);
 
     std::unordered_map<char, std::string> pieceTextureMap = {
@@ -172,13 +178,13 @@ void Board::render() {
     float squareWidth = this->widthOfSquare;
     float squareHeight = this->heightOfSquare;
 
-    int rank = 7; // Start from rank 8 (top of the board)
-    int file = 0; // Start from file A (leftmost)
+    int rank = this->isReversed ? 7 : 0; // Start from rank 8 (topmost)
+    int file = this->isReversed ? 7 : 0;; // Start from file A (leftmost)
 
     for (char fenChar : fenData) {
         if (fenChar == '/') {
-            rank--;
-            file = 0;
+            this->isReversed ? rank-- : rank++;
+            this->isReversed ? file = 7 : file = 0;
         } else if (isdigit(fenChar)) {
             file += fenChar - '0';
         } else if (fenChar == ' ') {
@@ -193,7 +199,7 @@ void Board::render() {
                                      glm::vec2(squareWidth, squareHeight),
                                      0.0f);
             }
-            file++;
+            this->isReversed ? file-- : file ++;
         }
     }
 
@@ -201,7 +207,7 @@ void Board::render() {
 
 void Board::processInput(float dt) {
     if (Keyboard::keyWentDown(GLFW_KEY_F)) {
-        std::cout << "F pressed" << std::endl;
+        this->isReversed = !this->isReversed;
     }
 }
 
@@ -223,3 +229,4 @@ Board::~Board() {
     delete[] pieces;;
     delete Renderer;
 }
+

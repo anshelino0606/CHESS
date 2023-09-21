@@ -63,6 +63,7 @@ private:
     unsigned int width, height;
     unsigned int widthOfSquare, heightOfSquare;
 
+    bool isReversed;
 };
 
 
