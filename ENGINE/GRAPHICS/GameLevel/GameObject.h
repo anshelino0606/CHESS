@@ -16,7 +16,7 @@ class GameObject {
 public:
 
     GameObject();
-    GameObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color = glm::vec3(1.0f), glm::vec2 velocity = glm::vec2(0.0f), bool isBarrier = false, bool isShop = false, bool isHalfBarrier = false);
+    GameObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color = glm::vec3(1.0f), glm::vec2 velocity = glm::vec2(0.0f));
 
     glm::vec2 pos;
     glm::vec2 size;
@@ -25,10 +25,6 @@ public:
     glm::vec3 color;
 
     float rotation;
-    bool isBarrier;
-    bool isHalfBarrier;
-    bool isShop;
-    bool stuck;
 
     Texture2D Sprite;
 
