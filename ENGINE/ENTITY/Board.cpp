@@ -21,11 +21,11 @@ void Board::init() {
     myShader = ResourceManager::getShader("sprite");
     Renderer = new SpriteRenderer(myShader);
 
-    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/board.jpg", false, "board");
+    ResourceManager::loadTexture("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/board.png", true, "board");
 
-    GameLevel level;
-    level.load("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/board.jpg", this->width, this->height);
-    this->level = level;
+    GameLevel level1;
+    level1.load("/Users/anhelinamodenko/CLionProjects/CHESS/Addons/media/tileData.txt", this->width, this->height);
+    this->level = level1;
 
 }
 
