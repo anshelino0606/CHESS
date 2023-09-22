@@ -63,10 +63,14 @@ private:
     char* board;
     bool** castleRights;
     Piece* pieces;
-    Piece *selectedPiece;
+    Piece* selectedPiece;
 
     unsigned int width, height;
     unsigned int widthOfSquare, heightOfSquare;
+
+    unsigned int rowSelected;
+    unsigned int colSelected;
+
 
     bool isReversed;
 };

@@ -69,11 +69,10 @@ void Board::init() {
     this->level = level1;
     this->isReversed = false;
     parseFen(initialFEN);
-
+    rowSelected = -1;
+    colSelected = -1;
 
 }
-
-
 
 void Board::parseFen(const std::string& FEN) {
     fenData = FEN;
@@ -154,7 +153,6 @@ void Board::render() {
                          0.0f);
 
 
-
     this->level.draw(*Renderer);
 
     std::unordered_map<char, std::string> pieceTextureMap = {
@@ -204,11 +202,16 @@ void Board::render() {
         }
     }
 
+    renderHighlight(Position(rowSelected, colSelected));
+
 }
 
 void Board::processInput(float dt) {
     if (Keyboard::keyWentDown(GLFW_KEY_F)) {
         this->isReversed = !this->isReversed;
+    }
+    if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        renderHighlight(Position(rowSelected, colSelected));
     }
     doCollisions();
 }
@@ -240,31 +243,16 @@ void Board::doCollisions() {
     unsigned int row = y / this->heightOfSquare;
     unsigned int col = x / this->widthOfSquare;
 
-    if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_LEFT)) {
-        std::cout << "row: " << row+1 << " col: " << col+1 << std::endl;
-
-        Piece* clickedPiece = getPieceAt(Position(row, col));
-
-        if (clickedPiece != nullptr) {
-            if (selectedPiece == clickedPiece) {
-                selectedPiece = nullptr;
-                removeHighlight(Position(row, col));
-            } else {
-                selectedPiece = clickedPiece;
-                renderHighlight(Position(row, col));
-            }
-        } else {
-            // Clear the selected piece if an empty square is clicked
-            selectedPiece = nullptr;
-            removeHighlight(Position(row, col));
-        }
-
+    if (Mouse::buttonWentUp(GLFW_MOUSE_BUTTON_LEFT)) {
+        rowSelected = row;
+        colSelected = col;
+        renderHighlight(Position(rowSelected, colSelected));
     }
 }
 
 void Board::renderHighlight(Position position) {
     // Highlight the square on position
-    glm::vec2 highlightPosition = glm::vec2(position.getCol() * widthOfSquare, position.getRow() * heightOfSquare);
+    glm::vec2 highlightPosition = glm::vec2(position.getCol() * widthOfSquare, position.getRow()*heightOfSquare);
     Renderer->DrawSprite(ResourceManager::getTexture("highlight"),
                          highlightPosition,
                          glm::vec2(widthOfSquare, heightOfSquare),
@@ -273,12 +261,7 @@ void Board::renderHighlight(Position position) {
 
 void Board::removeHighlight(Position position) {
     // Remove the highlight from the square on position
-    glm::vec2 highlightPosition = glm::vec2(position.getCol() * widthOfSquare, position.getRow() * heightOfSquare);
-    Renderer->DrawSprite(ResourceManager::getTexture("board"),
-                         highlightPosition,
-                         glm::vec2(widthOfSquare, heightOfSquare),
-                         0.0f);
+    glm::vec2 highlightPosition = glm::vec2(position.getCol(), position.getRow());
+    selectedPiece = nullptr;
 
 }
-
-
