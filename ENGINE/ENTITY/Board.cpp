@@ -95,6 +95,8 @@ void Board::parseFen(const std::string& FEN) {
         }
     };
 
+
+
     // Parse the board
     while (iter < FEN.size() && FEN[iter] != ' ') {
         if (FEN[iter] == '/') {
@@ -246,7 +248,7 @@ void Board::doCollisions() {
     if (Mouse::buttonWentUp(GLFW_MOUSE_BUTTON_LEFT)) {
         rowSelected = row;
         colSelected = col;
-        renderHighlight(Position(rowSelected, colSelected));
+        selectedPiece = getPieceAt(Position(rowSelected, colSelected));
     }
 }
 
