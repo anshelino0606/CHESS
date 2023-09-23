@@ -78,6 +78,7 @@ private:
     bool isReversed;
     bool moveMade;
     bool isHighlighted;
+    std::vector<Position> legalMoves;
 };
 
 
