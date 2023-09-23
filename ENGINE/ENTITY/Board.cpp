@@ -15,7 +15,6 @@ Board::Board(unsigned int width, unsigned int height) : keys(){
     this->widthOfSquare = width / 8.0f;
     this->heightOfSquare = height / 8.0f;
 
-
     try {
         board = new char[NB_SQ];
         castleRights = new bool*[NB_COLOR];
@@ -23,11 +22,14 @@ Board::Board(unsigned int width, unsigned int height) : keys(){
             castleRights[i] = new bool[NB_CASTLE];
         }
 
+        // pieces array initialize 64 memory blocks
+
+
+
     } catch (...) {
         // Exception occurred, clean up allocated memory
         delete[] board;
         delete[] castleRights;
-        delete[] pieces;
 
         // Re-throw the exception to propagate it
         throw;
@@ -80,11 +82,12 @@ void Board::parseFen(const std::string& FEN) {
     size_t iter = 0;
     int index = 0;
 
+
     // Function to set the squares on the board
     auto set_squares = [&](char piece, int count) {
         for (int i = 0; i < count; ++i) {
             if (index < NB_SQ) {
-//                board[index] = piece;
+                board[index] = piece;
                 ++index;
             }
             else {
@@ -193,6 +196,7 @@ void Board::render() {
         } else {
             auto it = pieceTextureMap.find(fenChar);
             if (it != pieceTextureMap.end()) {
+
                 glm::vec2 piecePosition = glm::vec2(file * squareWidth, rank * squareHeight);
 
                 Renderer->DrawSprite(ResourceManager::getTexture(it->second),
@@ -211,9 +215,40 @@ void Board::render() {
 void Board::processInput(float dt) {
     if (Keyboard::keyWentDown(GLFW_KEY_F)) {
         this->isReversed = !this->isReversed;
+        // print out the board
+        std::cout << "Board: " << std::endl;
+        for (int i = 0; i < NB_SQ; ++i) {
+            std::cout << board[i];
+            if ((i + 1) % 8 == 0) {
+                std::cout << std::endl;
+            }
+        }
     }
-    if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_LEFT)) {
-        renderHighlight(Position(rowSelected, colSelected));
+    if (Mouse::buttonWentUp(GLFW_MOUSE_BUTTON_LEFT)) {
+        // If a piece is already selected
+        // get mouse position
+        unsigned int x = Mouse::getMouseX();
+        unsigned int y = Mouse::getMouseY();
+
+        unsigned int row = y / this->heightOfSquare;
+        unsigned int col = x / this->widthOfSquare;
+        
+        if (selectedPiece != nullptr) {
+            // Make a move
+            Position target(row, col);
+            makeMove(selectedPiece->getPosition(), target);
+            fenData = boardToFen();
+
+            // Reset selection
+            rowSelected = -1;
+            colSelected = -1;
+            selectedPiece = nullptr;
+        } else {
+            // Select a piece
+            rowSelected = row;
+            colSelected = col;
+            selectedPiece = getPieceAt(Position(rowSelected, colSelected));
+        }
     }
     doCollisions();
 }
@@ -246,6 +281,7 @@ void Board::doCollisions() {
     unsigned int col = x / this->widthOfSquare;
 
     if (Mouse::buttonWentUp(GLFW_MOUSE_BUTTON_LEFT)) {
+
         rowSelected = row;
         colSelected = col;
         selectedPiece = getPieceAt(Position(rowSelected, colSelected));
@@ -265,5 +301,84 @@ void Board::removeHighlight(Position position) {
     // Remove the highlight from the square on position
     glm::vec2 highlightPosition = glm::vec2(position.getCol(), position.getRow());
     selectedPiece = nullptr;
+
+}
+
+void Board::makeMove(Position from, Position to) {
+
+    if (!isValidPosition(to.getRow(), to.getCol()))
+        return;
+
+    Piece* piece = getPieceAt(from);
+    if (piece == nullptr)
+        return;
+
+    Piece* capturedPiece = getPieceAt(to);
+    if (capturedPiece != nullptr) {
+        capturedPiece->setPosition(Position(-1, -1));
+    }
+
+    piece->setPosition(to);
+    board[to.getRow() * 8 + to.getCol()] = board[from.getRow() * 8 + from.getCol()];
+    board[from.getRow() * 8 + from.getCol()] = '.';
+
+    rowSelected = -1;
+    colSelected = -1;
+    selectedPiece = nullptr;
+
+}
+
+std::string Board::boardToFen() {
+
+    std::string fen = "";
+    int emptyCount = 0;
+
+    for (int i = 0; i < NB_SQ; i++) {
+        if (i % 8 == 0 && i != 0) {
+            if (emptyCount > 0) {
+                fen += std::to_string(emptyCount);
+                emptyCount = 0;
+            }
+            fen += '/';
+        }
+
+        if (board[i] == '.') {
+            emptyCount++;
+        } else {
+            if (emptyCount > 0) {
+                fen += std::to_string(emptyCount);
+                emptyCount = 0;
+            }
+            fen += board[i];
+        }
+    }
+    if (emptyCount > 0) {
+        fen += std::to_string(emptyCount);
+    }
+
+    fen += " ";
+    fen += turn == Color::white ? "w" : "b";
+
+    fen += " ";
+    if (castleRights[0][0] || castleRights[0][1] || castleRights[1][0] || castleRights[1][1]) {
+        if (castleRights[0][0]) fen += 'K';
+        if (castleRights[0][1]) fen += 'Q';
+        if (castleRights[1][0]) fen += 'k';
+        if (castleRights[1][1]) fen += 'q';
+    } else {
+        fen += '-';
+    }
+
+    fen += " ";
+    fen += enPassant;
+
+    fen += " ";
+    fen += "0";
+
+    fen += " ";
+    fen += "1";
+
+    return fen;
+
 
 }
