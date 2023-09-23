@@ -278,10 +278,14 @@ void Board::doCollisions() {
         if (selectedPiece == nullptr) {
             // Select a piece
             if (clickedPiece != nullptr && clickedPiece->getSymbol() != '.') {
-                selectedPiece = clickedPiece;
-                rowSelected = row;
-                colSelected = col;
-                std::cout << "Selected piece: " << selectedPiece->getSymbol() << std::endl;
+                if (clickedPiece->getColor() == turn) {
+                    selectedPiece = clickedPiece;
+                    rowSelected = row;
+                    colSelected = col;
+                    std::cout << "Selected piece: " << selectedPiece->getSymbol() << " " << std::endl;
+                } else {
+                    std::cout << "Not your turn to move!" << std::endl;
+                }
             }
         } else {
             if (selectedPiece != nullptr) {
@@ -292,6 +296,9 @@ void Board::doCollisions() {
                 if (clickedPiece != nullptr && clickedPiece->getColor() == selectedPiece->getColor() &&
                     clickedPiece->getSymbol() != '.') {
                     std::cout << "Can't move there!" << std::endl;
+                    selectedPiece = nullptr;
+                    rowSelected = -1;
+                    colSelected = -1;
                     return;
                 }
 
@@ -323,6 +330,8 @@ void Board::doCollisions() {
                 selectedPiece = nullptr;
                 rowSelected = -1;
                 colSelected = -1;
+
+                turn = turn == Color::white ? Color::black : Color::white;
                 std::cout << "Move made!" << std::endl;
             }
         }
