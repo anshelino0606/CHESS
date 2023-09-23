@@ -55,7 +55,8 @@ std::vector<Position> Piece::getLegalMoves(const Board &board, Position currentP
                 int targetRow = currentPos.getRow() + forwardDir;
                 int targetCol = currentPos.getCol() + colOffset;
                 if (board.isValidPosition(targetRow, targetCol) &&
-                    board.isOpponent(targetRow, targetCol, color)) {
+                    board.isOpponent(targetRow, targetCol, color)
+                    && board.getPieceAt(Position(targetRow, targetCol))->getType() != PieceType::NONE) {
                     legalMoves.push_back(Position(targetRow, targetCol));
                 }
             }
