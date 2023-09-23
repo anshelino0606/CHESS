@@ -25,7 +25,8 @@ enum class Castle
 enum class Color
 {
     white,
-    black
+    black,
+    none
 };
 
 class Board {
@@ -70,10 +71,12 @@ private:
     unsigned int width, height;
     unsigned int widthOfSquare, heightOfSquare;
 
-    unsigned int rowSelected;
-    unsigned int colSelected;
+    int rowSelected;
+    int colSelected;
 
     bool isReversed;
+    bool moveMade;
+    bool isHighlighted;
 };
 
 

@@ -35,6 +35,9 @@ Board::Board(unsigned int width, unsigned int height) : keys(){
         throw;
     }
 
+    moveMade = false;
+    bool isHighlighted = false;
+
 }
 
 void Board::init() {
@@ -208,13 +211,13 @@ void Board::render() {
         }
     }
 
-    renderHighlight(Position(rowSelected, colSelected));
 
+    renderHighlight(Position(rowSelected, colSelected));
 }
 
 void Board::processInput(float dt) {
     if (Keyboard::keyWentDown(GLFW_KEY_F)) {
-        this->isReversed = !this->isReversed;
+//        this->isReversed = !this->isReversed;
         // print out the board
         std::cout << "Board: " << std::endl;
         for (int i = 0; i < NB_SQ; ++i) {
@@ -225,43 +228,7 @@ void Board::processInput(float dt) {
         }
     }
 
-    if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_LEFT)) {
-        unsigned int x = Mouse::getMouseX();
-        unsigned int y = Mouse::getMouseY();
 
-        unsigned int row = y / this->heightOfSquare;
-        unsigned int col = x / this->widthOfSquare;
-
-        selectedPiece = getPieceAt(Position(rowSelected, colSelected));
-
-        // Check if selectedPiece is not nullptr before calling getSymbol()
-        if (selectedPiece != nullptr) {
-
-            std::cout << "Selected piece: " << selectedPiece->getSymbol() << std::endl;
-            rowSelected = row;
-            colSelected = col;
-
-            // Make a move
-            Position target(row, col);
-            makeMove(selectedPiece->getPosition(), target);
-            fenData = boardToFen();
-
-            // Reset selection
-            rowSelected = -1;
-            colSelected = -1;
-            selectedPiece = nullptr;
-        } else {
-            unsigned int x = Mouse::getMouseX();
-            unsigned int y = Mouse::getMouseY();
-
-            unsigned int row = y / this->heightOfSquare;
-            unsigned int col = x / this->widthOfSquare;
-            // Select a piece
-            rowSelected = row;
-            colSelected = col;
-            selectedPiece = getPieceAt(Position(rowSelected, colSelected));
-        }
-    }
     doCollisions();
 }
 
@@ -297,17 +264,48 @@ Board::~Board() {
 
 void Board::doCollisions() {
 
-    unsigned int x = Mouse::getMouseX();
-    unsigned int y = Mouse::getMouseY();
+    if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_LEFT)) {
 
-    unsigned int row = y / this->heightOfSquare;
-    unsigned int col = x / this->widthOfSquare;
+        unsigned int x = Mouse::getMouseX();
+        unsigned int y = Mouse::getMouseY();
 
-    if (Mouse::buttonWentUp(GLFW_MOUSE_BUTTON_LEFT)) {
+        unsigned int row = y / this->heightOfSquare;
+        unsigned int col = x / this->widthOfSquare;
 
-        rowSelected = row;
-        colSelected = col;
-        selectedPiece = getPieceAt(Position(rowSelected, colSelected));
+        Piece *clickedPiece = getPieceAt(Position(row, col));
+
+        if (selectedPiece == nullptr) {
+            // Select a piece
+            if (clickedPiece != nullptr && clickedPiece->getSymbol() != '.') {
+                selectedPiece = clickedPiece;
+                rowSelected = row;
+                colSelected = col;
+                std::cout << "Selected piece: " << selectedPiece->getSymbol() << std::endl;
+            }
+        } else {
+            if (selectedPiece != nullptr) {
+                // Make a move
+                Position target(row, col);
+
+                // if pieces are same color and it's not '.' then we can't move
+                if (clickedPiece != nullptr && clickedPiece->getColor() == selectedPiece->getColor() &&
+                    clickedPiece->getSymbol() != '.') {
+                    std::cout << "Can't move there!" << std::endl;
+                    return;
+                }
+
+                // Check that the target square is empty or contains a piece of a different color
+                makeMove(selectedPiece->getPosition(), target);
+                fenData = boardToFen();
+                moveMade = true; // Set the flag to true
+
+                // Reset selection
+                selectedPiece = nullptr;
+                rowSelected = -1;
+                colSelected = -1;
+                std::cout << "Move made!" << std::endl;
+            }
+        }
     }
 }
 
