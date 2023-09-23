@@ -224,16 +224,23 @@ void Board::processInput(float dt) {
             }
         }
     }
-    if (Mouse::buttonWentUp(GLFW_MOUSE_BUTTON_LEFT)) {
-        // If a piece is already selected
-        // get mouse position
+
+    if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_LEFT)) {
         unsigned int x = Mouse::getMouseX();
         unsigned int y = Mouse::getMouseY();
 
         unsigned int row = y / this->heightOfSquare;
         unsigned int col = x / this->widthOfSquare;
-        
+
+        selectedPiece = getPieceAt(Position(rowSelected, colSelected));
+
+        // Check if selectedPiece is not nullptr before calling getSymbol()
         if (selectedPiece != nullptr) {
+
+            std::cout << "Selected piece: " << selectedPiece->getSymbol() << std::endl;
+            rowSelected = row;
+            colSelected = col;
+
             // Make a move
             Position target(row, col);
             makeMove(selectedPiece->getPosition(), target);
@@ -244,6 +251,11 @@ void Board::processInput(float dt) {
             colSelected = -1;
             selectedPiece = nullptr;
         } else {
+            unsigned int x = Mouse::getMouseX();
+            unsigned int y = Mouse::getMouseY();
+
+            unsigned int row = y / this->heightOfSquare;
+            unsigned int col = x / this->widthOfSquare;
             // Select a piece
             rowSelected = row;
             colSelected = col;
@@ -255,9 +267,20 @@ void Board::processInput(float dt) {
 
 Piece* Board::getPieceAt(Position position) const {
     Piece *piece = nullptr;
+
+    // Check if the position is valid
     if (isValidPosition(position.getRow(), position.getCol())) {
-        piece = &pieces[position.getRow() * 8 + position.getCol()];
+        // Calculate the index of the Piece in the pieces array
+        unsigned int index = position.getRow() * 8 + position.getCol();
+        int row = position.getRow();
+        int col = position.getCol();
+        char symbol = board[row * 8 + col];
+        Color color = symbol >= 'a' && symbol <= 'z' ? Color::black : Color::white;
+
+        piece = new Piece(symbol, color, position, Piece::pieceTypeMap[symbol]);
     }
+
+    // Return the piece pointer
     return piece;
 }
 
