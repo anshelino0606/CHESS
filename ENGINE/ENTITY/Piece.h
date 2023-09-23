@@ -6,6 +6,8 @@
 #define CHESS_PIECE_H
 
 #include "Position/Position.hpp"
+#include "Board.h"
+
 #include <vector>
 #include <map>
 
@@ -29,7 +31,7 @@ public:
     Piece();
     Piece(char symbol, Color color, Position position, PieceType type);
 
-    std::vector<Position> getLegalMoves(const Board& board, Position currentPos) const;
+    std::vector<Position> getLegalMoves(const Board& board, Position currentPos);
 
     PieceType getType() const {
         return type;

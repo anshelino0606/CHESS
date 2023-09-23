@@ -16,6 +16,8 @@ constexpr int NB_SQ = 64;       // Number of squares on the chessboard
 constexpr int NB_CASTLE = 2;    // Number of castle types
 constexpr int NB_COLOR = 2;     // Number of colors in chess (white and black)
 
+class Piece;
+
 enum class Castle
 {
     kingSide,
