@@ -12,5 +12,15 @@ Piece::~Piece() {
     delete this;
 }
 
+Piece::Piece() : symbol('.'), color(), position(Position(0, 0)), type(PieceType::NONE) {}
 
 
+
+std::unordered_map<char, PieceType> Piece::pieceTypeMap = {
+        {'p', PieceType::pawn},
+        {'n', PieceType::knight},
+        {'b', PieceType::bishop},
+        {'r', PieceType::rook},
+        {'q', PieceType::queen},
+        {'k', PieceType::king}
+};

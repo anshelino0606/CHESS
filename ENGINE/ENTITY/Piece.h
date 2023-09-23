@@ -55,19 +55,7 @@ public:
         this->position = position;
     }
 
-    std::unordered_map<char, PieceType> pieceTypeMap = {
-            {'p', PieceType::pawn},
-            {'r', PieceType::rook},
-            {'n', PieceType::knight},
-            {'b', PieceType::bishop},
-            {'q', PieceType::queen},
-            {'k', PieceType::king}
-    };
-
-
-
-
-
+    static std::unordered_map<char, PieceType> pieceTypeMap;
 
 
     ~Piece();
