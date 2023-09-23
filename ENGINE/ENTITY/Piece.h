@@ -7,6 +7,7 @@
 
 #include "Position/Position.hpp"
 #include <vector>
+#include <map>
 
 class Board;
 enum class Color;
@@ -17,24 +18,64 @@ enum class PieceType {
     bishop,
     rook,
     queen,
-    king
+    king,
+    NONE
 };
+
 
 class Piece {
 public:
 
+    Piece();
     Piece(char symbol, Color color, Position position, PieceType type);
 
-    virtual std::vector<Position> getLegalMoves(const Board& board, Position currentPos) const = 0;
+    std::vector<Position> getLegalMoves(const Board& board, Position currentPos) const;
 
-    virtual ~Piece();
+    PieceType getType() const {
+        return type;
+    }
+
+    char getSymbol() const {
+        return symbol;
+    }
+
+    char setSymbol(char symbol) {
+        this->symbol = symbol;
+    }
+
+    Color getColor() const {
+        return color;
+    }
+
+    Position getPosition() const {
+        return position;
+    }
+
+    void setPosition(Position position) {
+        this->position = position;
+    }
+
+    std::unordered_map<char, PieceType> pieceTypeMap = {
+            {'p', PieceType::pawn},
+            {'r', PieceType::rook},
+            {'n', PieceType::knight},
+            {'b', PieceType::bishop},
+            {'q', PieceType::queen},
+            {'k', PieceType::king}
+    };
+
+
+
+
+
+
+
+    ~Piece();
 
 private:
     char symbol;
     Position position;
     PieceType type;
-
-protected:
     Color color;
 };
 
