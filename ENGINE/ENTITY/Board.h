@@ -37,6 +37,7 @@ public:
     bool keys[1024];
 
     void parseFen(const std::string& FEN);
+    std::string boardToFen();
     void processInput(float dt);
     void init();
     void update();
@@ -45,6 +46,7 @@ public:
 
     void renderHighlight(Position position);
     void removeHighlight(Position position);
+    void makeMove(Position from, Position to);
 
     bool isEmpty(int row, int col) const;
     bool isOpponent(int row, int col, Color currentPlayerColor) const;
@@ -70,7 +72,6 @@ private:
 
     unsigned int rowSelected;
     unsigned int colSelected;
-
 
     bool isReversed;
 };
