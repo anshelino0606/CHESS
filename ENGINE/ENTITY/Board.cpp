@@ -294,6 +294,25 @@ void Board::doCollisions() {
                     return;
                 }
 
+                // Check if the move is legal
+                std::vector<Position> legalMoves = selectedPiece->getLegalMoves(*this, selectedPiece->getPosition());
+                for (int i = 0; i < legalMoves.size(); ++i) {
+                    std::cout << legalMoves[i].getRow() << " " << legalMoves[i].getCol() << std::endl;
+                }
+                bool isLegalMove = false;
+
+                for (const Position &legalMove : legalMoves) {
+                    if (legalMove == target) {
+                        isLegalMove = true;
+                        break;
+                    }
+                }
+
+                if (!isLegalMove) {
+                    std::cout << "Illegal move!" << std::endl;
+                    return;
+                }
+
                 // Check that the target square is empty or contains a piece of a different color
                 makeMove(selectedPiece->getPosition(), target);
                 fenData = boardToFen();
@@ -402,4 +421,8 @@ std::string Board::boardToFen() {
     return fen;
 
 
+}
+
+bool Board::isEmpty(int row, int col) const {
+    return board[row * 8 + col] == '.';
 }
