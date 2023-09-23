@@ -212,20 +212,28 @@ void Board::render() {
     }
 
 
+
+
     renderHighlight(Position(rowSelected, colSelected));
+    if (legalMoves.size() != 0 && rowSelected != -1 && colSelected != -1) {
+        for (int i = 0; i < legalMoves.size(); ++i) {
+            renderHighlight(legalMoves[i]);
+        }
+    }
+
 }
 
 void Board::processInput(float dt) {
     if (Keyboard::keyWentDown(GLFW_KEY_F)) {
 //        this->isReversed = !this->isReversed;
         // print out the board
-        std::cout << "Board: " << std::endl;
-        for (int i = 0; i < NB_SQ; ++i) {
-            std::cout << board[i];
-            if ((i + 1) % 8 == 0) {
-                std::cout << std::endl;
-            }
-        }
+//        std::cout << "Board: " << std::endl;
+//        for (int i = 0; i < NB_SQ; ++i) {
+//            std::cout << board[i];
+//            if ((i + 1) % 8 == 0) {
+//                std::cout << std::endl;
+//            }
+//        }
     }
 
 
@@ -274,7 +282,6 @@ void Board::doCollisions() {
         unsigned int col = x / this->widthOfSquare;
 
         Piece *clickedPiece = getPieceAt(Position(row, col));
-
         if (selectedPiece == nullptr) {
             // Select a piece
             if (clickedPiece != nullptr && clickedPiece->getSymbol() != '.') {
@@ -283,6 +290,11 @@ void Board::doCollisions() {
                     rowSelected = row;
                     colSelected = col;
                     std::cout << "Selected piece: " << selectedPiece->getSymbol() << " " << std::endl;
+                    legalMoves = selectedPiece->getLegalMoves(*this, selectedPiece->getPosition());
+                    for (int i = 0; i < legalMoves.size(); ++i) {
+                        std::cout << legalMoves[i].getRow() << " " << legalMoves[i].getCol() << std::endl;
+                        renderHighlight(legalMoves[i]);
+                    }
                 } else {
                     std::cout << "Not your turn to move!" << std::endl;
                 }
@@ -303,10 +315,7 @@ void Board::doCollisions() {
                 }
 
                 // Check if the move is legal
-                std::vector<Position> legalMoves = selectedPiece->getLegalMoves(*this, selectedPiece->getPosition());
-                for (int i = 0; i < legalMoves.size(); ++i) {
-                    std::cout << legalMoves[i].getRow() << " " << legalMoves[i].getCol() << std::endl;
-                }
+                legalMoves = selectedPiece->getLegalMoves(*this, selectedPiece->getPosition());
                 bool isLegalMove = false;
 
                 for (const Position &legalMove : legalMoves) {
@@ -336,6 +345,7 @@ void Board::doCollisions() {
             }
         }
     }
+
 }
 
 void Board::renderHighlight(Position position) {
