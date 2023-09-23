@@ -57,7 +57,6 @@ public:
 
     Piece* getPieceAt(Position position) const;
 
-
     ~Board();
 
 private:

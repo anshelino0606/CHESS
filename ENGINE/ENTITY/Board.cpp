@@ -245,6 +245,7 @@ Piece* Board::getPieceAt(Position position) const {
         Color color = symbol >= 'a' && symbol <= 'z' ? Color::black : Color::white;
 
         piece = new Piece(symbol, color, position, Piece::pieceTypeMap[symbol]);
+
     }
 
     // Return the piece pointer
@@ -425,4 +426,14 @@ std::string Board::boardToFen() {
 
 bool Board::isEmpty(int row, int col) const {
     return board[row * 8 + col] == '.';
+}
+
+
+bool Board::isOpponent(int row, int col, Color currentPlayerColor) const {
+    if (isValidPosition(row, col)) {
+        char symbol = board[row * 8 + col];
+        Color color = symbol >= 'a' && symbol <= 'z' ? Color::black : Color::white;
+        return color != currentPlayerColor;
+    }
+    return false;
 }

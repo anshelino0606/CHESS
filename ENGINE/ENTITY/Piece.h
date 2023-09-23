@@ -7,7 +7,6 @@
 
 #include "Position/Position.hpp"
 #include "Board.h"
-
 #include <vector>
 #include <map>
 
@@ -33,34 +32,33 @@ public:
 
     std::vector<Position> getLegalMoves(const Board& board, Position currentPos);
 
-    PieceType getType() const {
+    virtual PieceType getType() const {
         return type;
     }
 
-    char getSymbol() const {
+    virtual char getSymbol() const {
         return symbol;
     }
 
-    char setSymbol(char symbol) {
+    virtual char setSymbol(char symbol) {
         this->symbol = symbol;
     }
 
-    Color getColor() const {
+    virtual Color getColor() const {
         return color;
     }
 
-    Position getPosition() const {
+    virtual Position getPosition() const {
         return position;
     }
 
-    void setPosition(Position position) {
+    virtual void setPosition(Position position) {
         this->position = position;
     }
 
     static std::unordered_map<char, PieceType> pieceTypeMap;
 
-
-    ~Piece();
+    virtual ~Piece();
 
 private:
     char symbol;
