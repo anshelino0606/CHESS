@@ -30,7 +30,7 @@ public:
     Piece();
     Piece(char symbol, Color color, Position position, PieceType type);
 
-    std::vector<Position> getLegalMoves(const Board& board, Position currentPos);
+    virtual std::vector<Position> getLegalMoves(const Board& board, Position currentPos);
 
     virtual PieceType getType() const {
         return type;
