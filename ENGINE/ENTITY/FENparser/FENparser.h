@@ -6,6 +6,9 @@
 #define CHESS_FENPARSER_H
 
 #include <string>
+#include "../Board.h"
+
+
 
 class FENparser {
 
@@ -14,7 +17,7 @@ public:
     /*
      * CONSTRUCTOR
      */
-    FENparser(std::string fenString);
+    FENparser(std::string fenString, Board& board);
 
     /*
      * FUNCTIONALITY
@@ -24,6 +27,7 @@ public:
 
 private:
     std::string fenString;
+    Board& board;
 
 };
 

@@ -12,6 +12,7 @@
 #include "ENGINE/IO/mouse.h"
 #include "ENGINE/GRAPHICS/GameLevel/GameLevel.h"
 #include "ENGINE/ENTITY/MoveHandler/MoveHandler.h"
+#include "ENGINE/ENTITY/FENparser/FENparser.h"
 
 constexpr int NB_SQ = 64;       // Number of squares on the chessboard
 constexpr int NB_CASTLE = 2;    // Number of castle types
@@ -33,29 +34,17 @@ enum class Color
 };
 
 class MoveHandler;
+class FENparser;
 
 class Board {
 public:
+    /*
+     * CONSTRUCTOR
+     */
     Board(unsigned int width, unsigned int height);
-
-    GameLevel level;
-
-    bool keys[1024];
-
-
-    /*
-     * TODO: implement division into classes
-     */
-
-    /*
-     * FEN PARSER
-     */
-    void parseFen(const std::string& FEN);
-    std::string boardToFen();
 
     /*
      * GRAPHICS HANDLING FOR BOARD
-     * TODO: leave it in board class
      */
     void processInput(float dt);
     void init();
@@ -81,13 +70,17 @@ public:
 
     ~Board();
 
-    char* board;
+
 private:
+    GameLevel level;
+    bool keys[1024];
+
+    char* board;
     Color turn;
+    bool** castleRights;
     std::string enPassant;
     std::string fenData;
 
-    bool** castleRights;
     Piece* pieces;
     Piece* selectedPiece;
     Piece* draggedPiece;
@@ -104,8 +97,10 @@ private:
     std::vector<Position> legalMoves;
 
     MoveHandler* moveHandler;
+    FENparser* fenParser;
 
     friend class MoveHandler;
+    friend class FENparser;
 };
 
 
