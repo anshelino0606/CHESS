@@ -5,8 +5,8 @@
 #include "Piece.h"
 
 
-Piece::Piece(char symbol, Color color, Position position, PieceType type)
-    : symbol(symbol), color(color), position(position), type(type) {}
+Piece::Piece(char symbol, Color color, Position position, PieceType type, MoveHandler* moveHandler)
+    : symbol(symbol), color(color), position(position), type(type), moveHandler(moveHandler) {}
 
 Piece::~Piece() {
     delete this;
@@ -39,13 +39,14 @@ std::vector<Position> Piece::getLegalMoves(const Board &board, Position currentP
             int forwardDir = (color == Color::white) ? -1 : 1;
             int startingRow = (color == Color::white) ? 6 : 1;
 
+
             // Check one square forward
-            if (board.isEmpty(currentPos.getRow() + forwardDir, currentPos.getCol())) {
+            if (moveHandler->isEmpty(currentPos.getRow() + forwardDir, currentPos.getCol())) {
                 legalMoves.push_back(Position(currentPos.getRow() + forwardDir, currentPos.getCol()));
 
                 // Check two squares forward from the starting position
                 if (currentPos.getRow() == startingRow &&
-                    board.isEmpty(currentPos.getRow() + 2 * forwardDir, currentPos.getCol())) {
+                        moveHandler->isEmpty(currentPos.getRow() + 2 * forwardDir, currentPos.getCol())) {
                     legalMoves.push_back(Position(currentPos.getRow() + 2 * forwardDir, currentPos.getCol()));
                 }
             }
@@ -54,8 +55,8 @@ std::vector<Position> Piece::getLegalMoves(const Board &board, Position currentP
             for (int colOffset: {-1, 1}) {
                 int targetRow = currentPos.getRow() + forwardDir;
                 int targetCol = currentPos.getCol() + colOffset;
-                if (board.isValidPosition(targetRow, targetCol) &&
-                    board.isOpponent(targetRow, targetCol, color)
+                if (moveHandler->isValidPosition(targetRow, targetCol) &&
+                        moveHandler->isOppositeColor(targetRow, targetCol, color)
                     && board.getPieceAt(Position(targetRow, targetCol))->getType() != PieceType::NONE) {
                     legalMoves.push_back(Position(targetRow, targetCol));
                 }
@@ -79,8 +80,8 @@ std::vector<Position> Piece::getLegalMoves(const Board &board, Position currentP
                 int targetRow = currentPos.getRow() + moves[i][0];
                 int targetCol = currentPos.getCol() + moves[i][1];
 
-                if (board.isValidPosition(targetRow, targetCol) &&
-                    (board.isEmpty(targetRow, targetCol) || board.isOpponent(targetRow, targetCol, color))) {
+                if (moveHandler->isValidPosition(targetRow, targetCol) &&
+                    (moveHandler->isEmpty(targetRow, targetCol) || moveHandler->isOppositeColor(targetRow, targetCol, color))) {
                     legalMoves.push_back(Position(targetRow, targetCol));
                 }
             }
@@ -101,11 +102,11 @@ std::vector<Position> Piece::getLegalMoves(const Board &board, Position currentP
                 int targetRow = currentPos.getRow() + dr;
                 int targetCol = currentPos.getCol() + dc;
 
-                while (board.isValidPosition(targetRow, targetCol)) {
-                    if (board.isEmpty(targetRow, targetCol)) {
+                while (moveHandler->isValidPosition(targetRow, targetCol)) {
+                    if (moveHandler->isEmpty(targetRow, targetCol)) {
                         legalMoves.push_back(Position(targetRow, targetCol));
                     } else {
-                        if (board.isOpponent(targetRow, targetCol, color)) {
+                        if (moveHandler->isOppositeColor(targetRow, targetCol, color)) {
                             legalMoves.push_back(Position(targetRow, targetCol));
                         }
                         break; // Stop further movement in this direction
@@ -130,11 +131,11 @@ std::vector<Position> Piece::getLegalMoves(const Board &board, Position currentP
                 int targetRow = currentPos.getRow() + dr;
                 int targetCol = currentPos.getCol() + dc;
 
-                while (board.isValidPosition(targetRow, targetCol)) {
-                    if (board.isEmpty(targetRow, targetCol)) {
+                while (moveHandler->isValidPosition(targetRow, targetCol)) {
+                    if (moveHandler->isEmpty(targetRow, targetCol)) {
                         legalMoves.push_back(Position(targetRow, targetCol));
                     } else {
-                        if (board.isOpponent(targetRow, targetCol, color)) {
+                        if (moveHandler->isOppositeColor(targetRow, targetCol, color)) {
                             legalMoves.push_back(Position(targetRow, targetCol));
                         }
                         break; // Stop further movement in this direction
@@ -159,11 +160,11 @@ std::vector<Position> Piece::getLegalMoves(const Board &board, Position currentP
                 int targetRow = currentPos.getRow() + dr;
                 int targetCol = currentPos.getCol() + dc;
 
-                while (board.isValidPosition(targetRow, targetCol)) {
-                    if (board.isEmpty(targetRow, targetCol)) {
+                while (moveHandler->isValidPosition(targetRow, targetCol)) {
+                    if (moveHandler->isEmpty(targetRow, targetCol)) {
                         legalMoves.push_back(Position(targetRow, targetCol));
                     } else {
-                        if (board.isOpponent(targetRow, targetCol, color)) {
+                        if (moveHandler->isOppositeColor(targetRow, targetCol, color)) {
                             legalMoves.push_back(Position(targetRow, targetCol));
                         }
                         break; // Stop further movement in this direction
@@ -188,9 +189,9 @@ std::vector<Position> Piece::getLegalMoves(const Board &board, Position currentP
                 int targetRow = currentPos.getRow() + dr;
                 int targetCol = currentPos.getCol() + dc;
 
-                if (board.isValidPosition(targetRow, targetCol)) {
-                    if (board.isEmpty(targetRow, targetCol) ||
-                        board.isOpponent(targetRow, targetCol, color)) {
+                if (moveHandler->isValidPosition(targetRow, targetCol)) {
+                    if (moveHandler->isEmpty(targetRow, targetCol) ||
+                        moveHandler->isOppositeColor(targetRow, targetCol, color)) {
                         legalMoves.push_back(Position(targetRow, targetCol));
                     }
                 }
