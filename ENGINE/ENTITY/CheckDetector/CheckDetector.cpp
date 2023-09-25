@@ -4,6 +4,8 @@
 
 #include "CheckDetector.h"
 
+CheckDetector::CheckDetector(Board &board) : board(board) {}
+
 std::vector<Position> CheckDetector::getLegalMoves(const Board &board, Position currentPos) {
     std::vector<Position> legalMoves;
     Piece* piece = board.getPieceAt(currentPos);
@@ -65,3 +67,35 @@ Position CheckDetector::getOpponentKingPosition(Color currentPlayerColor) {
         }
     }
 }
+
+bool CheckDetector::isCheck(Color currentPlayerColor) {
+    return isKingAttacked(currentPlayerColor);
+}
+
+bool CheckDetector::isCheckmate(Color currentPlayerColor) {
+    if (!isCheck(currentPlayerColor)) {
+        return false;
+    }
+    for (int i = 0; i < NB_SQ / 8; ++i) {
+        for (int j = 0; j < NB_SQ / 8; ++j) {
+            Piece *piece = board.getPieceAt(Position(i, j));
+            if (piece != nullptr && piece->getColor() == currentPlayerColor) {
+                std::vector<Position> pieceMoves = piece->getLegalMoves(board, piece->getPosition());
+                for (auto move : pieceMoves) {
+                    if (isMoveLegal(board, piece->getPosition(), move)) {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+
+bool CheckDetector::isPin(Color currentPlayerColor, Position from, Position to) {
+    Board tempBoard = board;
+    tempBoard.moveHandler->makeMove(from, to);
+    return isKingAttacked(currentPlayerColor);
+}
+
+
