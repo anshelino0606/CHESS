@@ -7,6 +7,9 @@
 
 #include "../Board.h"
 
+class Board;
+enum class Color;
+
 class MoveHandler {
 
 public:
@@ -14,8 +17,11 @@ public:
     /*
      * CONSTRUCTOR
      */
+    MoveHandler();
 
-    MoveHandler(Board& board);
+    explicit MoveHandler(Board &board);
+
+
 
     /*
      * FUNCTIONS
