@@ -10,6 +10,7 @@
 #include <vector>
 #include <map>
 
+class MoveHandler;
 class Board;
 enum class Color;
 
@@ -28,7 +29,7 @@ class Piece {
 public:
 
     Piece();
-    Piece(char symbol, Color color, Position position, PieceType type);
+    Piece(char symbol, Color color, Position position, PieceType type, MoveHandler* moveHandler);
 
     virtual std::vector<Position> getLegalMoves(const Board& board, Position currentPos);
 
@@ -65,6 +66,7 @@ private:
     Position position;
     PieceType type;
     Color color;
+    MoveHandler* moveHandler;
 };
 
 
