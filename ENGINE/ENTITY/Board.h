@@ -64,7 +64,6 @@ public:
     void doCollisions();
 
     void renderHighlight(Position position);
-    void removeHighlight(Position position);
 
     /*
      * GETTERS AND SETTERS

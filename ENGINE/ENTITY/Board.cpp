@@ -265,10 +265,6 @@ Piece* Board::getPieceAt(Position position) const {
     return piece;
 }
 
-//bool Board::isValidPosition(int row, int col) const {
-//    return row >= 0 && row < 8 && col >= 0 && col < 8;
-//}
-
 void Board::doCollisions() {
 
     if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_LEFT)) {
@@ -360,13 +356,6 @@ void Board::renderHighlight(Position position) {
                          0.0f);
 }
 
-void Board::removeHighlight(Position position) {
-    // Remove the highlight from the square on position
-    glm::vec2 highlightPosition = glm::vec2(position.getCol(), position.getRow());
-    selectedPiece = nullptr;
-
-}
-
 std::string Board::boardToFen() {
 
     std::string fen = "";
@@ -421,7 +410,6 @@ std::string Board::boardToFen() {
 
 
 }
-
 
 Board::~Board() {
     delete[] board;
