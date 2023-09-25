@@ -35,7 +35,7 @@ public:
      * @param row - row of the cell
      * @param col - column of the cell
      */
-    bool isEmpty(int row, int col);
+    bool isEmpty(int row, int col) const;
 
     /*
      * Checks if the cell has Piece of opposite color
@@ -44,6 +44,14 @@ public:
      * @param currentPlayerColor - color of the current player
      */
     bool isOppositeColor(int row, int col, Color currentPlayerColor) const;
+
+
+    /*
+     * Checks if position is valid
+     * @param row - row of the cell
+     * @param col - column of the cell
+     */
+    bool isValidPosition(int row, int col) const;
 
 
 private:
