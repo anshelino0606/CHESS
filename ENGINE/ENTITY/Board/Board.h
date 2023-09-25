@@ -13,6 +13,7 @@
 #include "ENGINE/GRAPHICS/GameLevel/GameLevel.h"
 #include "ENGINE/ENTITY/MoveHandler/MoveHandler.h"
 #include "ENGINE/ENTITY/FENparser/FENparser.h"
+#include "ENGINE/ENTITY/CheckDetector/CheckDetector.h"
 
 constexpr int NB_SQ = 64;       // Number of squares on the chessboard
 constexpr int NB_CASTLE = 2;    // Number of castle types
@@ -35,6 +36,7 @@ enum class Color
 
 class MoveHandler;
 class FENparser;
+class CheckDetector;
 
 class Board {
 public:
@@ -68,10 +70,11 @@ public:
 
 
 private:
+    char* board;
+
     GameLevel level;
     bool keys[1024];
 
-    char* board;
     Color turn;
     bool** castleRights;
     std::string enPassant;
@@ -94,9 +97,11 @@ private:
 
     MoveHandler* moveHandler;
     FENparser* fenParser;
+    CheckDetector* checkDetector;
 
     friend class MoveHandler;
     friend class FENparser;
+    friend class CheckDetector;
 };
 
 
