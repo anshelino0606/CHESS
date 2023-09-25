@@ -3,6 +3,7 @@
 //
 
 #include "MoveHandler.h"
+#include "../Board.h"
 
 MoveHandler::MoveHandler(Board &board)
     : board(board) {}
@@ -25,15 +26,11 @@ bool MoveHandler::makeMove(Position from, Position to) {
     board.board[to.getRow() * 8 + to.getCol()] = board.board[from.getRow() * 8 + from.getCol()];
     board.board[from.getRow() * 8 + from.getCol()] = '.';
 
-    board.setSelectedCol(-1);
-    board.setSelectedRow(-1);
-    board.setSelectedPiece(nullptr);
+    board.selectedPiece = nullptr;
+    board.rowSelected = -1;
+    board.colSelected = -1;
 
     return false;
-}
-
-bool MoveHandler::isEmpty(int row, int col) const {
-    return board.board[row * 8 + col] == '.';
 }
 
 bool MoveHandler::isOppositeColor(int row, int col, Color currentPlayerColor) const {
@@ -51,3 +48,6 @@ bool MoveHandler::isValidPosition(int row, int col) const {
 }
 
 
+bool MoveHandler::isEmpty(int row, int col) const {
+    return board.board[row * 8 + col] == '.';
+}
