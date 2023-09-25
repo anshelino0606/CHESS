@@ -5,8 +5,8 @@
 #ifndef CHESS_PIECE_H
 #define CHESS_PIECE_H
 
-#include "Position/Position.hpp"
-#include "Board.h"
+#include "ENGINE/ENTITY/Position/Position.hpp"
+#include "ENGINE/ENTITY/Board/Board.h"
 #include <vector>
 #include <map>
 

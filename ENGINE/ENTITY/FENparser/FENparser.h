@@ -6,7 +6,7 @@
 #define CHESS_FENPARSER_H
 
 #include <string>
-#include "../Board.h"
+#include "ENGINE/ENTITY/Board/Board.h"
 
 
 

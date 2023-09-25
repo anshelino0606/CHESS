@@ -5,7 +5,7 @@
 #ifndef CHESS_MOVEHANDLER_H
 #define CHESS_MOVEHANDLER_H
 
-#include "../Board.h"
+#include "ENGINE/ENTITY/Board/Board.h"
 
 class Board;
 enum class Color;

@@ -5,7 +5,7 @@
 #include "Addons/glad/glad.h"
 #include <GLFW/glfw3.h>
 
-#include "ENGINE/ENTITY/Board.h"
+#include "ENGINE/ENTITY/Board/Board.h"
 #include "ENGINE/IO/keyboard.h"
 #include "ENGINE/IO/mouse.h"
 #include "/Users/anhelinamodenko/CLionProjects/CHESS/ENGINE/GRAPHICS/ResourceManager/resourceManager.h"

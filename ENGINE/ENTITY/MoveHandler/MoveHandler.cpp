@@ -3,7 +3,7 @@
 //
 
 #include "MoveHandler.h"
-#include "../Board.h"
+#include "ENGINE/ENTITY/Board/Board.h"
 
 MoveHandler::MoveHandler(Board &board)
     : board(board) {}

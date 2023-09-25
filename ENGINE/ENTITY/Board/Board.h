@@ -6,7 +6,7 @@
 #define CHESS_BOARD_H
 
 #include <string>
-#include "Piece.h"
+#include "ENGINE/ENTITY/Piece/Piece.h"
 #include "ENGINE/GRAPHICS/Texture/texture.h"
 #include "ENGINE/IO/keyboard.h"
 #include "ENGINE/IO/mouse.h"
