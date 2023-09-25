@@ -9,6 +9,9 @@
 SpriteRenderer* Renderer;
 
 Board::Board(unsigned int width, unsigned int height) : keys(){
+
+    moveHandler = new MoveHandler(*this);
+
     this->height = height;
     this->width = width;
 
@@ -36,7 +39,9 @@ Board::Board(unsigned int width, unsigned int height) : keys(){
     }
 
     moveMade = false;
-    bool isHighlighted = false;
+    isHighlighted = false;
+
+
 
 }
 
@@ -244,7 +249,7 @@ Piece* Board::getPieceAt(Position position) const {
     Piece *piece = nullptr;
 
     // Check if the position is valid
-    if (isValidPosition(position.getRow(), position.getCol())) {
+    if (moveHandler->isValidPosition(position.getRow(), position.getCol())) {
         // Calculate the index of the Piece in the pieces array
         unsigned int index = position.getRow() * 8 + position.getCol();
         int row = position.getRow();
@@ -252,7 +257,7 @@ Piece* Board::getPieceAt(Position position) const {
         char symbol = board[row * 8 + col];
         Color color = symbol >= 'a' && symbol <= 'z' ? Color::black : Color::white;
 
-        piece = new Piece(symbol, color, position, Piece::pieceTypeMap[symbol]);
+        piece = new Piece(symbol, color, position, Piece::pieceTypeMap[symbol], this->moveHandler);
 
     }
 
@@ -260,16 +265,9 @@ Piece* Board::getPieceAt(Position position) const {
     return piece;
 }
 
-bool Board::isValidPosition(int row, int col) const {
-    return row >= 0 && row < 8 && col >= 0 && col < 8;
-}
-
-Board::~Board() {
-    delete[] board;
-    delete[] castleRights;
-    delete[] pieces;;
-    delete Renderer;
-}
+//bool Board::isValidPosition(int row, int col) const {
+//    return row >= 0 && row < 8 && col >= 0 && col < 8;
+//}
 
 void Board::doCollisions() {
 
@@ -289,6 +287,8 @@ void Board::doCollisions() {
                     selectedPiece = clickedPiece;
                     rowSelected = row;
                     colSelected = col;
+                    draggedPiece = clickedPiece;
+
                     std::cout << "Selected piece: " << selectedPiece->getSymbol() << " " << std::endl;
                     legalMoves = selectedPiece->getLegalMoves(*this, selectedPiece->getPosition());
                     for (int i = 0; i < legalMoves.size(); ++i) {
@@ -331,7 +331,7 @@ void Board::doCollisions() {
                 }
 
                 // Check that the target square is empty or contains a piece of a different color
-                makeMove(selectedPiece->getPosition(), target);
+                moveHandler->makeMove(selectedPiece->getPosition(), target);
                 fenData = boardToFen();
                 moveMade = true; // Set the flag to true
 
@@ -343,8 +343,11 @@ void Board::doCollisions() {
                 turn = turn == Color::white ? Color::black : Color::white;
                 std::cout << "Move made!" << std::endl;
             }
+
         }
+
     }
+
 
 }
 
@@ -360,30 +363,6 @@ void Board::renderHighlight(Position position) {
 void Board::removeHighlight(Position position) {
     // Remove the highlight from the square on position
     glm::vec2 highlightPosition = glm::vec2(position.getCol(), position.getRow());
-    selectedPiece = nullptr;
-
-}
-
-void Board::makeMove(Position from, Position to) {
-
-    if (!isValidPosition(to.getRow(), to.getCol()))
-        return;
-
-    Piece* piece = getPieceAt(from);
-    if (piece == nullptr)
-        return;
-
-    Piece* capturedPiece = getPieceAt(to);
-    if (capturedPiece != nullptr) {
-        capturedPiece->setPosition(Position(-1, -1));
-    }
-
-    piece->setPosition(to);
-    board[to.getRow() * 8 + to.getCol()] = board[from.getRow() * 8 + from.getCol()];
-    board[from.getRow() * 8 + from.getCol()] = '.';
-
-    rowSelected = -1;
-    colSelected = -1;
     selectedPiece = nullptr;
 
 }
@@ -443,16 +422,23 @@ std::string Board::boardToFen() {
 
 }
 
-bool Board::isEmpty(int row, int col) const {
-    return board[row * 8 + col] == '.';
+
+Board::~Board() {
+    delete[] board;
+    delete[] castleRights;
+    delete[] pieces;;
+    delete Renderer;
 }
 
-
-bool Board::isOpponent(int row, int col, Color currentPlayerColor) const {
-    if (isValidPosition(row, col)) {
-        char symbol = board[row * 8 + col];
-        Color color = symbol >= 'a' && symbol <= 'z' ? Color::black : Color::white;
-        return color != currentPlayerColor;
-    }
-    return false;
+void Board::setSelectedRow(int row) {
+    this->rowSelected = row;
 }
+
+void Board::setSelectedCol(int col) {
+    this->colSelected = col;
+}
+
+void Board::setSelectedPiece(Piece *piece) {
+    this->selectedPiece = piece;
+}
+
