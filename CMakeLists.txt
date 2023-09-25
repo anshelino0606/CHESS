@@ -7,8 +7,8 @@ add_executable(CHESS main.cpp
         ENGINE/GRAPHICS/Texture/texture.cpp
         ENGINE/GRAPHICS/Shader/shader.cpp
         ENGINE/GRAPHICS/ResourceManager/resourceManager.cpp
-        ENGINE/ENTITY/Board.cpp
-        ENGINE/ENTITY/Piece.cpp
+        ENGINE/ENTITY/Board/Board.cpp
+        ENGINE/ENTITY/Piece/Piece.cpp
         Addons/glad/glad.c
         Addons/stb/stb.cpp
         ENGINE/GRAPHICS/Renderer/SpriteRenderer.cpp
@@ -24,7 +24,8 @@ add_executable(CHESS main.cpp
         ENGINE/ENTITY/Types/Queen.hpp
         ENGINE/ENTITY/Types/Rook.hpp
         ENGINE/ENTITY/FENparser/FENparser.cpp
-        ENGINE/ENTITY/MoveHandler/MoveHandler.cpp)
+        ENGINE/ENTITY/MoveHandler/MoveHandler.cpp
+        ENGINE/ENTITY/CheckDetector/CheckDetector.cpp)
 
 
 target_include_directories(CHESS PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
