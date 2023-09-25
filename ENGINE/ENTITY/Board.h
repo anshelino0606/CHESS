@@ -76,6 +76,10 @@ public:
 
     Piece* getPieceAt(Position position) const;
 
+    /*
+     * DESTRUCTOR
+     */
+
     ~Board();
 
     char* board;
@@ -100,7 +104,7 @@ private:
     bool isHighlighted;
     std::vector<Position> legalMoves;
 
-    MoveHandler moveHandler;
+    MoveHandler* moveHandler;
 
     friend class MoveHandler;
 };
