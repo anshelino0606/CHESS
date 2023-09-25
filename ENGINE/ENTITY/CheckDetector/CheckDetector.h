@@ -40,15 +40,32 @@ public:
     bool isCheckmate(Color currentPlayerColor);
 
 
+    /*
+     * Get opponent's king position
+     * @param currentPlayerColor - color of the current player
+     */
+    Position getOpponentKingPosition(Color currentPlayerColor);
 
+    /*
+     * Checks if the move is legal
+     * @param board - current board
+     * @param currentPos - position of the current player's piece
+     * @param newPos - position of the piece to move
+     */
+    bool isMoveLegal(const Board& board, Position currentPos, Position newPos);
+
+    /*
+     * Get legal moves for the current player's piece
+     * @implicit param board - current board
+     * @param currentPos - position of the current player's piece
+     */
+    bool isKingAttacked(Color currentPlayerColor);
 
 private:
 
     Board& board;
 
     std::vector<Position> getLegalMoves(const Board& board, Position currentPos);
-    bool isMoveLegal(const Board& board, Position currentPos, Position newPos);
-    bool isKingAttacked(Color currentPlayerColor, Position kingPos);
 };
 
 
