@@ -22,7 +22,18 @@ public:
     /*
      * FUNCTIONALITY
      */
+
+    /*
+     * Parses the FEN string and sets the board accordingly
+     * @param FEN - the FEN string to parse
+     * @implicit board - the board to set
+     */
     void parseFen(const std::string& FEN);
+
+    /*
+     * Converts the board to a FEN string
+     * @return the FEN string
+     */
     std::string boardToFen();
 
 private:
