@@ -289,16 +289,3 @@ Board::~Board() {
     delete[] pieces;;
     delete Renderer;
 }
-
-void Board::setSelectedRow(int row) {
-    this->rowSelected = row;
-}
-
-void Board::setSelectedCol(int col) {
-    this->colSelected = col;
-}
-
-void Board::setSelectedPiece(Piece *piece) {
-    this->selectedPiece = piece;
-}
-

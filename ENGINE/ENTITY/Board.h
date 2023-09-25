@@ -55,12 +55,8 @@ public:
     void renderHighlight(Position position);
 
     /*
-     * GETTERS AND SETTERS
+     * GETTER OF PIECE
      */
-
-    void setSelectedRow(int row);
-    void setSelectedCol(int col);
-    void setSelectedPiece(Piece* piece);
 
     Piece* getPieceAt(Position position) const;
 
