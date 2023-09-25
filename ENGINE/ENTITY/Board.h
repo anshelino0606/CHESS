@@ -11,6 +11,7 @@
 #include "ENGINE/IO/keyboard.h"
 #include "ENGINE/IO/mouse.h"
 #include "ENGINE/GRAPHICS/GameLevel/GameLevel.h"
+#include "ENGINE/ENTITY/MoveHandler/MoveHandler.h"
 
 constexpr int NB_SQ = 64;       // Number of squares on the chessboard
 constexpr int NB_CASTLE = 2;    // Number of castle types
@@ -31,6 +32,8 @@ enum class Color
     none
 };
 
+class MoveHandler;
+
 class Board {
 public:
     Board(unsigned int width, unsigned int height);
@@ -39,8 +42,21 @@ public:
 
     bool keys[1024];
 
+
+    /*
+     * TODO: implement division into classes
+     */
+
+    /*
+     * FEN PARSER
+     */
     void parseFen(const std::string& FEN);
     std::string boardToFen();
+
+    /*
+     * GRAPHICS HANDLING FOR BOARD
+     * TODO: leave it in board class
+     */
     void processInput(float dt);
     void init();
     void update();
@@ -49,25 +65,29 @@ public:
 
     void renderHighlight(Position position);
     void removeHighlight(Position position);
-    void makeMove(Position from, Position to);
 
-    bool isEmpty(int row, int col) const;
-    bool isOpponent(int row, int col, Color currentPlayerColor) const;
-    bool isValidPosition(int row, int col) const;
+    /*
+     * GETTERS AND SETTERS
+     */
+
+    void setSelectedRow(int row);
+    void setSelectedCol(int col);
+    void setSelectedPiece(Piece* piece);
 
     Piece* getPieceAt(Position position) const;
 
     ~Board();
 
+    char* board;
 private:
     Color turn;
     std::string enPassant;
     std::string fenData;
 
-    char* board;
     bool** castleRights;
     Piece* pieces;
     Piece* selectedPiece;
+    Piece* draggedPiece;
 
     unsigned int width, height;
     unsigned int widthOfSquare, heightOfSquare;
@@ -79,6 +99,10 @@ private:
     bool moveMade;
     bool isHighlighted;
     std::vector<Position> legalMoves;
+
+    MoveHandler moveHandler;
+
+    friend class MoveHandler;
 };
 
 
