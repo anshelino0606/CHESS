@@ -204,3 +204,21 @@ std::vector<Position> Piece::getLegalMoves(const Board &board, Position currentP
     }
     return legalMoves;
 }
+
+Piece::Piece(const Piece &other) {
+    this->symbol = other.symbol;
+    this->color = other.color;
+    this->position = other.position;
+    this->type = other.type;
+    this->moveHandler = other.moveHandler;
+
+}
+
+Piece &Piece::operator=(const Piece &other) {
+    this->symbol = other.symbol;
+    this->color = other.color;
+    this->position = other.position;
+    this->type = other.type;
+    this->moveHandler = other.moveHandler;
+    return *this;
+}
