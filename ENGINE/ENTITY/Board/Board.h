@@ -71,6 +71,10 @@ public:
     // Function to check for pins
     bool isPin(Color currentPlayerColor, Position from, Position to);
 
+    static Color getColor(char symbol);
+
+    std::vector<Piece*> getOppositePieces(Color color);
+
     /*
      * GETTER OF PIECE
      */
