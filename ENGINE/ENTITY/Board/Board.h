@@ -6,6 +6,7 @@
 #define CHESS_BOARD_H
 
 #include <string>
+#include "ENGINE/ENTITY/Move/Move.hpp"
 #include "ENGINE/ENTITY/Piece/Piece.h"
 #include "ENGINE/GRAPHICS/Texture/texture.h"
 #include "ENGINE/IO/keyboard.h"
@@ -44,6 +45,8 @@ public:
      * CONSTRUCTOR
      */
     Board(unsigned int width, unsigned int height);
+    // copy constructor
+    Board(const Board& other);
 
     /*
      * GRAPHICS HANDLING FOR BOARD
@@ -56,6 +59,18 @@ public:
 
     void renderHighlight(Position position);
 
+    // Function to make a move and update move history
+    bool makeMove(Position from, Position to);
+
+    // Function to check for check
+    bool isCheck(Color currentPlayerColor);
+
+    // Function to check for checkmate
+    bool isCheckmate(Color currentPlayerColor);
+
+    // Function to check for pins
+    bool isPin(Color currentPlayerColor, Position from, Position to);
+
     /*
      * GETTER OF PIECE
      */
@@ -65,6 +80,7 @@ public:
     /*
      * DESTRUCTOR
      */
+
 
     ~Board();
 
@@ -80,7 +96,7 @@ private:
     std::string enPassant;
     std::string fenData;
 
-    Piece* pieces;
+//    Piece* pieces;
     Piece* selectedPiece;
     Piece* draggedPiece;
 
@@ -95,14 +111,19 @@ private:
     bool isHighlighted;
     std::vector<Position> legalMoves;
 
+    std::vector<Move> tableOfMoves;
+
     MoveHandler* moveHandler;
     FENparser* fenParser;
     CheckDetector* checkDetector;
+
+    Position findKingPosition(Color playerColor) const;
 
     friend class MoveHandler;
     friend class FENparser;
     friend class CheckDetector;
 };
+
 
 
 #endif //CHESS_BOARD_H
