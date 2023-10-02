@@ -12,6 +12,7 @@ Board::Board(unsigned int width, unsigned int height) : keys(){
 
     moveHandler = new MoveHandler(*this);
     fenParser = new FENparser(fenData, *this);
+    checkDetector = new CheckDetector(*this);
 
     this->height = height;
     this->width = width;
@@ -144,8 +145,6 @@ void Board::render() {
     }
 
 
-
-
     renderHighlight(Position(rowSelected, colSelected));
     if (legalMoves.size() != 0 && rowSelected != -1 && colSelected != -1) {
         for (int i = 0; i < legalMoves.size(); ++i) {
@@ -215,7 +214,7 @@ void Board::doCollisions() {
                     std::cout << "Selected piece: " << selectedPiece->getSymbol() << " " << std::endl;
                     legalMoves = selectedPiece->getLegalMoves(*this, selectedPiece->getPosition());
                     for (int i = 0; i < legalMoves.size(); ++i) {
-                        std::cout << legalMoves[i].getRow() << " " << legalMoves[i].getCol() << std::endl;
+//                        std::cout << legalMoves[i].getRow() << " " << legalMoves[i].getCol() << std::endl;
                         renderHighlight(legalMoves[i]);
                     }
                 } else {
@@ -237,19 +236,13 @@ void Board::doCollisions() {
                     return;
                 }
 
-                // Check if the move is legal
                 legalMoves = selectedPiece->getLegalMoves(*this, selectedPiece->getPosition());
-                bool isLegalMove = false;
-
-                for (const Position &legalMove : legalMoves) {
-                    if (legalMove == target) {
-                        isLegalMove = true;
-                        break;
-                    }
-                }
-
-                if (!isLegalMove) {
+                // Check if the target square is a legal move
+                if (std::find(legalMoves.begin(), legalMoves.end(), target) == legalMoves.end()) {
                     std::cout << "Illegal move!" << std::endl;
+                    selectedPiece = nullptr;
+                    rowSelected = -1;
+                    colSelected = -1;
                     return;
                 }
 
@@ -262,6 +255,9 @@ void Board::doCollisions() {
                 selectedPiece = nullptr;
                 rowSelected = -1;
                 colSelected = -1;
+                if (isCheck(turn)) {
+                    std::cout << "Check!" << std::endl;
+                }
 
                 turn = turn == Color::white ? Color::black : Color::white;
                 std::cout << "Move made!" << std::endl;
@@ -271,8 +267,8 @@ void Board::doCollisions() {
 
     }
 
-
 }
+
 
 void Board::renderHighlight(Position position) {
     // Highlight the square on position
@@ -286,6 +282,96 @@ void Board::renderHighlight(Position position) {
 Board::~Board() {
     delete[] board;
     delete[] castleRights;
-    delete[] pieces;;
-    delete Renderer;
+//    delete[] pieces;;
+//    delete Renderer;
+}
+
+Board::Board(const Board &other) {
+    this->width = other.width;
+    this->height = other.height;
+    this->widthOfSquare = other.widthOfSquare;
+    this->heightOfSquare = other.heightOfSquare;
+    this->level = other.level;
+    this->isReversed = other.isReversed;
+    this->fenData = other.fenData;
+    this->turn = other.turn;
+    this->moveMade = other.moveMade;
+    this->isHighlighted = other.isHighlighted;
+    this->rowSelected = other.rowSelected;
+    this->colSelected = other.colSelected;
+    this->legalMoves = other.legalMoves;
+    this->moveHandler = other.moveHandler;
+    this->fenParser = other.fenParser;
+    this->checkDetector = other.checkDetector;
+    this->board = new char[NB_SQ];
+    this->castleRights = new bool*[NB_COLOR];
+    for (int i = 0; i < NB_COLOR; ++i) {
+        this->castleRights[i] = new bool[NB_CASTLE];
+    }
+    for (int i = 0; i < NB_SQ; ++i) {
+        this->board[i] = other.board[i];
+    }
+    for (int i = 0; i < NB_COLOR; ++i) {
+        for (int j = 0; j < NB_CASTLE; ++j) {
+            this->castleRights[i][j] = other.castleRights[i][j];
+        }
+    }
+//    for (int i = 0; i < NB_SQ; ++i) {
+//        this->pieces[i] = other.pieces[i];
+//    }
+    this->selectedPiece = other.selectedPiece;
+    this->draggedPiece = other.draggedPiece;
+}
+
+Position Board::findKingPosition(Color playerColor) const {
+    char kingSymbol = (playerColor == Color::white) ? 'K' : 'k';
+
+    for (int row = 0; row < 8; ++row) {
+        for (int col = 0; col < 8; ++col) {
+            if (board[row * 8 + col] == kingSymbol) {
+                return Position(row, col);
+            }
+        }
+    }
+
+    return Position(-1, -1);
+}
+
+bool Board::isCheck(Color currentPlayerColor) {
+    Color opponentColor = currentPlayerColor == Color::white ? Color::black : Color::white;
+    Position kingPosition = findKingPosition(opponentColor);
+
+    std::vector<Piece*> currentPieces = getOppositePieces(opponentColor);
+
+    // check if any of the opponent pieces can attack the king
+    for (Piece* currentPiece : currentPieces) {
+        std::vector<Position> legalMoves = currentPiece->getLegalMoves(*this, currentPiece->getPosition());
+        if (std::find(legalMoves.begin(), legalMoves.end(), kingPosition) != legalMoves.end()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+Color Board::getColor(char symbol) {
+    if (symbol >= 'a' && symbol <= 'z') {
+        return Color::black;
+    } else if (symbol == '.') {
+        return Color::none;
+    } else {
+        return Color::white;
+    }
+}
+
+std::vector<Piece *> Board::getOppositePieces(Color color) {
+    // get all pieces of the opposite color
+    std::vector<Piece*> oppositePieces;
+    for (int i = 0; i < NB_SQ; ++i) {
+        char piece = board[i];
+        if (piece != '.' && getColor(piece) != color) {
+            oppositePieces.push_back(getPieceAt(Position(i / 8, i % 8)));
+
+        }
+    }
+    return oppositePieces;
 }
