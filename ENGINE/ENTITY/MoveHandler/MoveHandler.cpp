@@ -5,8 +5,12 @@
 #include "MoveHandler.h"
 #include "ENGINE/ENTITY/Board/Board.h"
 
+Board* helpingBoard = new Board(1000,1000);
+
 MoveHandler::MoveHandler(Board &board)
-    : board(board) {}
+    : board(board) {
+    checkDetector = new CheckDetector(board);
+}
 
 bool MoveHandler::makeMove(Position from, Position to) {
     if (!isValidPosition(from.getRow(), from.getCol()) || !isValidPosition(to.getRow(), to.getCol())) {
@@ -51,3 +55,30 @@ bool MoveHandler::isValidPosition(int row, int col) const {
 bool MoveHandler::isEmpty(int row, int col) const {
     return board.board[row * 8 + col] == '.';
 }
+
+bool MoveHandler::isMoveLegal(const Board &board, Position currentPos, Position newPos) {
+std::vector<Position> legalMoves = board.getPieceAt(currentPos)->getLegalMoves(board, currentPos);
+
+    for (auto move : legalMoves) {
+        if (move == newPos) {
+            // Make a copy of the board to simulate the move
+            Board tempBoard = board;
+
+            // Make a copy of the move handler without modifying the original
+            MoveHandler tempMoveHandler = *tempBoard.moveHandler;
+            // copy selected piece, and asign different memory address
+            tempMoveHandler.board.selectedPiece = tempBoard.getPieceAt(currentPos);
+
+            // Simulate the move on the temporary board
+            tempMoveHandler.makeMove(currentPos, newPos);
+
+            // Check if the king is attacked after the move
+            if (!checkDetector->isKingAttacked(tempBoard.getPieceAt(currentPos)->getColor())) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
