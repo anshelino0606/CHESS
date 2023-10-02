@@ -25,7 +25,8 @@ add_executable(CHESS main.cpp
         ENGINE/ENTITY/Types/Rook.hpp
         ENGINE/ENTITY/FENparser/FENparser.cpp
         ENGINE/ENTITY/MoveHandler/MoveHandler.cpp
-        ENGINE/ENTITY/CheckDetector/CheckDetector.cpp)
+        ENGINE/ENTITY/CheckDetector/CheckDetector.cpp
+        ENGINE/ENTITY/Move/Move.hpp)
 
 
 target_include_directories(CHESS PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
