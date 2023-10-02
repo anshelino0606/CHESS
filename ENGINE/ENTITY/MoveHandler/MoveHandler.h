@@ -9,6 +9,7 @@
 
 class Board;
 enum class Color;
+class CheckDetector;
 
 class MoveHandler {
 
@@ -20,8 +21,6 @@ public:
     MoveHandler();
 
     explicit MoveHandler(Board &board);
-
-
 
     /*
      * FUNCTIONS
@@ -59,9 +58,14 @@ public:
      */
     bool isValidPosition(int row, int col) const;
 
+    bool isMoveLegal(const Board &board, Position currentPos, Position newPos);
 
-private:
+
     Board& board;
+private:
+    CheckDetector* checkDetector;
+
+    friend class CheckDetector;
 };
 
 
