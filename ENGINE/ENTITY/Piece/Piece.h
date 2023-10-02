@@ -30,6 +30,7 @@ public:
 
     Piece();
     Piece(char symbol, Color color, Position position, PieceType type, MoveHandler* moveHandler);
+    Piece(const Piece& other);
 
     virtual std::vector<Position> getLegalMoves(const Board& board, Position currentPos);
 
@@ -58,6 +59,8 @@ public:
     }
 
     static std::unordered_map<char, PieceType> pieceTypeMap;
+
+    Piece& operator=(const Piece& other);
 
     virtual ~Piece();
 
