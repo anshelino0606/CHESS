@@ -75,6 +75,9 @@ public:
 
     std::vector<Piece*> getOppositePieces(Color color);
 
+    std::vector<Position> filterMovesToEscapeCheck(Color playerColor);
+    std::vector<Piece*> getCurrentPlayerPieces(Color currentPlayer);
+
     /*
      * GETTER OF PIECE
      */
