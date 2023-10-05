@@ -238,10 +238,13 @@ Piece* Board::getPieceAt(Position position) const {
 
                 std::unique_ptr<Board> tempBoard = std::make_unique<Board>(*this);
 
+                // copy the pieces
+                for (int i = 0; i < NB_SQ; ++i) {
+                    tempBoard->board[i] = board[i];
+                }
+
                 // Apply the move on the temporary board
                 tempBoard->makeMove(selectedPiece->getPosition(), target);
-                // update new legal moves
-                tempBoard->legalMoves = selectedPiece->getLegalMoves(*tempBoard, target);
 
                 // Check if the move results in the king being in check
                 if (tempBoard->isCheck(turn)) {
@@ -409,6 +412,7 @@ bool Board::makeMove(Position from, Position to) {
     piece->setPosition(to);
     board[to.getRow() * 8 + to.getCol()] = board[from.getRow() * 8 + from.getCol()];
     board[from.getRow() * 8 + from.getCol()] = '.';
+
 
     selectedPiece = nullptr;
     rowSelected = -1;
