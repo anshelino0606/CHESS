@@ -191,7 +191,7 @@ Piece* Board::getPieceAt(Position position) const {
     return piece;
 }
 
-void Board::doCollisions() {
+    void Board::doCollisions() {
 
     if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_LEFT)) {
 
@@ -236,7 +236,20 @@ void Board::doCollisions() {
                     return;
                 }
 
-                legalMoves = selectedPiece->getLegalMoves(*this, selectedPiece->getPosition());
+                std::unique_ptr<Board> tempBoard = std::make_unique<Board>(*this);
+
+                // Apply the move on the temporary board
+                tempBoard->makeMove(selectedPiece->getPosition(), target);
+
+                // Check if the move results in the king being in check
+                if (tempBoard->isCheck(turn)) {
+                    std::cout << "Illegal move! King would be in check." << std::endl;
+                    selectedPiece = nullptr;
+                    rowSelected = -1;
+                    colSelected = -1;
+                    return;
+                }
+
                 // Check if the target square is a legal move
                 if (std::find(legalMoves.begin(), legalMoves.end(), target) == legalMoves.end()) {
                     std::cout << "Illegal move!" << std::endl;
@@ -247,22 +260,23 @@ void Board::doCollisions() {
                 }
 
                 // Check that the target square is empty or contains a piece of a different color
-                moveHandler->makeMove(selectedPiece->getPosition(), target);
+                makeMove(selectedPiece->getPosition(), target);
                 fenData = fenParser->boardToFen();
                 moveMade = true; // Set the flag to true
 
                 // Reset selection
-                selectedPiece = nullptr;
-                rowSelected = -1;
-                colSelected = -1;
                 if (isCheck(turn)) {
                     std::cout << "Check!" << std::endl;
                 }
+                selectedPiece = nullptr;
+                rowSelected = -1;
+                colSelected = -1;
+
 
                 turn = turn == Color::white ? Color::black : Color::white;
+
                 std::cout << "Move made!" << std::endl;
             }
-
         }
 
     }
@@ -339,13 +353,13 @@ Position Board::findKingPosition(Color playerColor) const {
 
 bool Board::isCheck(Color currentPlayerColor) {
     Color opponentColor = currentPlayerColor == Color::white ? Color::black : Color::white;
-    Position kingPosition = findKingPosition(opponentColor);
+    Position kingPosition = findKingPosition(currentPlayerColor);
 
-    std::vector<Piece*> currentPieces = getOppositePieces(opponentColor);
+    std::vector<Piece*> opponentPieces = getOppositePieces(currentPlayerColor);
 
-    // check if any of the opponent pieces can attack the king
-    for (Piece* currentPiece : currentPieces) {
-        std::vector<Position> legalMoves = currentPiece->getLegalMoves(*this, currentPiece->getPosition());
+    // Check if any of the opponent's pieces can attack the king
+    for (Piece* opponentPiece : opponentPieces) {
+        std::vector<Position> legalMoves = opponentPiece->getLegalMoves(*this, opponentPiece->getPosition());
         if (std::find(legalMoves.begin(), legalMoves.end(), kingPosition) != legalMoves.end()) {
             return true;
         }
@@ -375,3 +389,54 @@ std::vector<Piece *> Board::getOppositePieces(Color color) {
     }
     return oppositePieces;
 }
+
+bool Board::makeMove(Position from, Position to) {
+    if (!moveHandler->isValidPosition(from.getRow(), from.getCol()) || !moveHandler->isValidPosition(to.getRow(), to.getCol())) {
+        return false;
+    }
+
+    Piece* piece = getPieceAt(from);
+    if (piece == nullptr)
+        return false;
+
+    Piece* capturedPiece = getPieceAt(to);
+    if (capturedPiece != nullptr) {
+        capturedPiece->setPosition(Position(-1, -1));
+    }
+
+    piece->setPosition(to);
+    board[to.getRow() * 8 + to.getCol()] = board[from.getRow() * 8 + from.getCol()];
+    board[from.getRow() * 8 + from.getCol()] = '.';
+
+    selectedPiece = nullptr;
+    rowSelected = -1;
+    colSelected = -1;
+
+    return false;
+}
+
+std::vector<Position> Board::filterMovesToEscapeCheck(Color playerColor) {
+    std::vector<Position> filteredMoves;
+    Position kingPos = findKingPosition(playerColor);
+
+    // Get all legal moves for the pieces of the current player
+    std::vector<Piece*> currentPlayerPieces = getCurrentPlayerPieces(playerColor);
+
+    for (Piece* piece : currentPlayerPieces) {
+        std::vector<Position> legalMoves = piece->getLegalMoves(*this, piece->getPosition());
+
+        for (const Position& move : legalMoves) {
+            // Create a temporary board to simulate the move
+            std::unique_ptr<Board> tempBoard = std::make_unique<Board>(*this);
+            tempBoard->makeMove(piece->getPosition(), move);
+
+            // Check if the move removes the king from check
+            if (!tempBoard->isCheck(playerColor)) {
+                filteredMoves.push_back(move);
+            }
+        }
+    }
+
+    return filteredMoves;
+}
+
