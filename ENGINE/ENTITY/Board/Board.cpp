@@ -240,6 +240,8 @@ Piece* Board::getPieceAt(Position position) const {
 
                 // Apply the move on the temporary board
                 tempBoard->makeMove(selectedPiece->getPosition(), target);
+                // update new legal moves
+                tempBoard->legalMoves = selectedPiece->getLegalMoves(*tempBoard, target);
 
                 // Check if the move results in the king being in check
                 if (tempBoard->isCheck(turn)) {
@@ -440,3 +442,16 @@ std::vector<Position> Board::filterMovesToEscapeCheck(Color playerColor) {
     return filteredMoves;
 }
 
+
+std::vector<Piece*> Board::getCurrentPlayerPieces(Color currentPlayer) {
+    // get all pieces of currentPlayer color
+
+    std::vector<Piece*> currentPlayerPieces;
+    for (int i = 0; i < NB_SQ; ++i) {
+        char piece = board[i];
+        if (piece != '.' && getColor(piece) == currentPlayer) {
+            currentPlayerPieces.push_back(getPieceAt(Position(i / 8, i % 8)));
+        }
+    }
+    return currentPlayerPieces;
+}
